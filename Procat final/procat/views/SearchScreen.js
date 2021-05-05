@@ -11,23 +11,18 @@ const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'TargetListScreen.php?action=get_users&lang=1';
 const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 
-    var radio_props = [
-        {label: 'Автомат', value: 0 },
-        {label: 'Механика', value: 1 }
-    ];
-    var radio_props2 = [
-        {label: '2', value: 0 },
-        {label: '4', value: 1 }
-    ]; 
+var radio_props = [
+    {label: 'Автомат', value: 0 },
+    {label: 'Механика', value: 1 }
+];
+var radio_props2 = [
+    {label: '2', value: 0 },
+    {label: '4', value: 1 }
+]; 
 
 class Search extends React.Component {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     toggleCheckBox: false,
-        //     toggleCheckBox2: false,
-        //     selectedIndex: 0
-        // };
     }
 
     state = {
@@ -44,6 +39,7 @@ class Search extends React.Component {
         mesta: '',
         s_voditelem: '',
         vodila_25: '',
+        calendar_date: '',
     }
 
     handlePrice_min = (text) => {
@@ -82,18 +78,29 @@ class Search extends React.Component {
         this.setState({ vodila_25: text })
     }
 
-    // handleChange = (index) => {
-    //     let checked = [...this.state.checked];
-    //     checked[index] = !checked[index];
-    //     this.setState({ checked });
-    // }
-
-    handleIndexChange = index => {
-        this.setState({
-          ...this.state,
-          selectedIndex: index
-        });
+    handleRegion = index => {
+        this.setState({region: index });
     };
+
+    getParsedDate(strDate) {
+        var strSplitDate = String(strDate).split(' ');
+        var date = new Date(strSplitDate[0]);
+
+        var dd = date.getDate();
+        var mm = date.getMonth() + 1;
+        var yyyy = date.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        date = dd + " " + mm + " " + yyyy;
+        return date.toString();
+    }
 
     render(){
         // const [toggleCheckBox, setToggleCheckBox] = useState(false)
@@ -113,16 +120,13 @@ class Search extends React.Component {
                     <View style={styles.otdo}>
                    <View style={styles.SegmentedControlTab1}>
                     <SegmentedControlTab
-                            tabTextStyle={styles.tabTextStyle}
-                            // allowFontScaling={false}
-                            values={["Алматы", "Астана"]}
-                            tabStyle={styles.tabStyle}
-                            selectedIndex={this.state.selectedIndex}
-                            onTabPress={this.handleIndexChange}
-                            activeTabStyle={styles.activeTabStyle}
-                            //   selectedIndex={1}
-                            //   onTabPress={index => this.setState({ selected: index })}
-                        />
+                        tabTextStyle={styles.tabTextStyle}
+                        values={["Алматы", "Астана"]}
+                        tabStyle={styles.tabStyle}
+                        selectedIndex={this.state.region}
+                        onTabPress={this.handleRegion}
+                        activeTabStyle={styles.activeTabStyle}
+                    />
                    </View>
                     </View>
                 </View>
@@ -207,7 +211,7 @@ class Search extends React.Component {
                             radio_props={radio_props}
                             initial={2}
                             //   formHorizontal={true}
-                            onPress={(value) => {this.setState({value:value})}}
+                            onPress={(value) => { this.setState({ kpp: value})}}
                             // onPress={() => this.handleChange(index)}
                             buttonColor={'#000'}
                             selectedButtonColor={'#000'}
@@ -227,7 +231,7 @@ class Search extends React.Component {
                             radio_props={radio_props2}
                             initial={2}
                             //   formHorizontal={true}
-                            onPress={(value) => {this.setState({value:value})}}
+                            onPress={(value) => {this.setState({ mesta: value})}}
                             buttonColor={'#000'}
                             selectedButtonColor={'#000'}
                             labelStyle={{fontSize: 13}}
@@ -239,15 +243,11 @@ class Search extends React.Component {
                 <View style={styles.header3}>
                     <View style={styles.checkboxVod}>
                     <CheckBox
-                     disabled={false}
-                     value={this.state.toggleCheckBox}
-                     onValueChange={(value) =>
-                        this.setState({
-                        toggleCheckBox: value,
-                        })
-                      }
-                      tintColors={{true: '#000000'}}
-                    style={styles.checkbox}
+                        disabled={false}
+                        value={this.state.toggleCheckBox}
+                        onPress={(value) => { this.setState({ s_voditelem: value }) }}
+                        tintColors={{true: '#000000'}}
+                        style={styles.checkbox}
                     />
                     <Text style={styles.text4}>С водителем</Text>
                     </View>
@@ -257,11 +257,7 @@ class Search extends React.Component {
                     <CheckBox
                      disabled={false}
                      value={this.state.toggleCheckBox2}
-                     onValueChange={(value) =>
-                        this.setState({
-                        toggleCheckBox2: value,
-                        })
-                      }
+                        onPress={(value) => { this.setState({ vodila_25: value }) }}
                       tintColors={{true: '#000000'}}
                     style={styles.checkbox}
                     />
@@ -270,51 +266,16 @@ class Search extends React.Component {
                 </View>
                 <View style={styles.header4}>
                 <Text style={styles.text4}>Дата</Text>
-                <Calendar
-  // Initially visible month. Default = Date()
-  current={'2021-01-01'}
-  // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-  minDate={'2021-01-01'}
-  // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-  maxDate={'2022-01-01'}
-  // Handler which gets executed on day press. Default = undefined
-  onDayPress={(day) => {console.log('selected day', day)}}
-  // Handler which gets executed on day long press. Default = undefined
-  onDayLongPress={(day) => {console.log('selected day', day)}}
-  // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-  monthFormat={'yyyy MM'}
-  // Handler which gets executed when visible month changes in calendar. Default = undefined
-  onMonthChange={(month) => {console.log('month changed', month)}}
-  // Hide month navigation arrows. Default = false
-  hideArrows={true}
-  // Replace default arrows with custom ones (direction can be 'left' or 'right')
-  renderArrow={(direction) => (<Arrow/>)}
-  // Do not show days of other months in month page. Default = false
-  hideExtraDays={true}
-  // If hideArrows=false and hideExtraDays=false do not switch month when tapping on greyed out
-  // day from another month that is visible in calendar page. Default = false
-  disableMonthChange={true}
-  // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
-  firstDay={1}
-  // Hide day names. Default = false
-  hideDayNames={true}
-  // Show week numbers to the left. Default = false
-  showWeekNumbers={false}
-  // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-  onPressArrowLeft={subtractMonth => subtractMonth()}
-  // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-  onPressArrowRight={addMonth => addMonth()}
-  // Disable left arrow. Default = false
-  disableArrowLeft={true}
-  // Disable right arrow. Default = false
-  disableArrowRight={true}
-  // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-  disableAllTouchEventsForDisabledDays={true}
-  // Replace default month and year title with custom one. the function receive a date as parameter.
-  renderHeader={(date) => {/*Return JSX*/}}
-  // Enable the option to swipe between months. Default = false
-  enableSwipeMonths={true}
-/>
+                    <Calendar
+                        onDayPress={(day) => {
+                            let date = this.getParsedDate(day['dateString']);                            
+                            
+                            this.setState({ calendar_date: date });
+                        }}
+                        monthFormat={'yyyy MM'}
+                        firstDay={1}
+                        enableSwipeMonths={true}
+                    />
             </View>
                 <View style={styles.header5}>
 
