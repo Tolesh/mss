@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Image, Pressable, TextInput, Button } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { CheckBox } from 'react-native';
 
 
 class Tovar extends React.Component {

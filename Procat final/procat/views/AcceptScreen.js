@@ -1,17 +1,90 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity } from 'react-native';
+import { CheckBox } from 'react-native';
 
+const GLOBAL = require('../views/Globals');
+const authUrl = GLOBAL.BASE_URL + 'verifications.php?action=login&lang=1';
+const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 
 class Accept extends React.Component {
 
+    state = {
+        data: [],
+        values: [],
+        dogovor: '',
+        ip: '',
+        isMessage1Display: false,
+        isMessage2Display: false,
+    }
+    
+    componentDidMount = async () => {
+        try {
+            const values_response = await fetch(valuesJsonUrl);
+            const values = await values_response.json();
+    
+            this.setState({ values });
+        } catch (e) {
+            throw e
+        }
+    }
+
+    handleDogovor = (text) => {
+        this.setState({ dogovor: text })
+    }
+    
+    handlePIp = (text) => {
+        this.setState({ ip: text })
+    }
+
+    login = () => {
+        var json = '{"dogovor": "' + this.state.dogovor + '", "ip": "' + this.state.ip + '"}';
+        const request = new Request(authUrl, { method: 'POST', body: json });
+        console.log(json);
+       
+        fetch(request)
+            .then(response => {
+                console.log(response);
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => { 
+                if (response == 1 || response == 2 || response == "") {
+                    if (response == 1) {
+                        this.setState({ isMessage1Display: true });
+                        this.setState({ isMessage2Display: false });
+                    }
+    
+                    if (response == 2) {
+                        this.setState({ isMessage1Display: false });
+                        this.setState({ isMessage2Display: true });
+                    }
+                } else {
+                    AsyncStorage.multiSet([
+                        ["id", response.id],
+                        ["dogovor", response.dogovor],
+                        ["ip", response.ip],
+                    ])
+    
+                    this.props.navigation.navigate('TovarScreen');
+                }
+            }).catch(error => {
+                console.error(error);
+            }); 
+    }
+
     render(){
         // const [isSelected, setSelection] = useState(false);
+        const { isMessage1Display, isMessage2Display } = this.state;
 
         return (
             <View style={styles.container}>
+                    <Text style={isMessage1Display ? styles.notice : styles.hide}>1</Text>
+                    <Text style={isMessage2Display ? styles.notice : styles.hide}>2</Text>
                 <View style={styles.head}>
                     <Text style={styles.textUp2}>Пройдите верификацию</Text>
                 </View>
@@ -24,6 +97,7 @@ class Accept extends React.Component {
                         returnKeyType='go'
                         keyboardType="number-pad"
                         maxLength={10}
+                        onChangeText={this.handleDogovor}
                         autoCorrect={false} />
 
                         <Text style={styles.textUp}>Номер ИП</Text>
@@ -33,25 +107,38 @@ class Accept extends React.Component {
                         keyboardType="number-pad"
                         returnKeyType='go'
                         maxLength={10}
+                        onChangeText={this.handlePIp}
                         autoCorrect={false} />
                 </View>
 
                 <View style={styles.checkboxContainer}>
                     <View style={styles.checkboxContainer2}>
                         <CheckBox
-                            // value={isSelected}
-                            // onValueChange={setSelection}
-                            style={styles.checkbox}/>
+                            disabled={false}
+                            value={this.state.toggleCheckBox}
+                            onValueChange={(value) =>
+                                this.setState({
+                                    toggleCheckBox: value,
+                                })
+                            }
+                            tintColors={{true: '#000000'}}
+                            style={styles.checkbox}
+                            onPress={() => this.setAgree()}
+                        />
 
                         <Text style={styles.label}>Remember me</Text>
                     </View>
                     
-                    <View style={styles.buttons}>
+                    {/* <View style={styles.buttons}>
                         <Button
                             title="Войти"
                             color="#000"
                         /> 
-                    </View>
+                    </View> */}
+
+                    <TouchableOpacity style={styles.button} onPress={this.login}>
+                        <Text style={styles.text_button}>Войти</Text>
+                    </TouchableOpacity>
                 </View>
                 
 
@@ -78,6 +165,14 @@ const styles = StyleSheet.create({
     },
     head: {
         alignItems: 'center',
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#000000",
+        padding: 10,
+      },
+    text_button: {
+        color: 'white'
     },
     input: {
         height: 52,
@@ -113,6 +208,19 @@ const styles = StyleSheet.create({
         // flexDirection: 'row',
         // justifyContent: 'space-between',
         // alignItems: 'left',
+    },
+    notice: {
+        position: 'absolute',
+        top: 50,
+        textAlign: 'center',
+        fontSize: 14,
+        fontFamily: 'Roboto',
+        left: '10%',
+        color: '#ff0000',
+        width: '80%',
+    },
+    hide: {
+        display: 'none'
     },
 });
 

@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList } from 'react-native';
 import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { CheckBox } from 'react-native';
 
 
 class Settings extends React.Component {

@@ -1,39 +1,109 @@
 import React, { useContext,} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import CheckBox from '@react-native-community/checkbox';
+import { CheckBox } from 'react-native';
 import SegmentedControlTab from "react-native-segmented-control-tab";
-var radio_props = [
-    {label: 'Автомат', value: 0 },
-    {label: 'Механика', value: 1 }
-  ];
-  var radio_props2 = [
-    {label: '2', value: 0 },
-    {label: '4', value: 1 }
-  ]; 
 
+const GLOBAL = require('../views/Globals');
+const getUsersUrl = GLOBAL.BASE_URL + 'TargetListScreen.php?action=get_users&lang=1';
+const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
+
+    var radio_props = [
+        {label: 'Автомат', value: 0 },
+        {label: 'Механика', value: 1 }
+    ];
+    var radio_props2 = [
+        {label: '2', value: 0 },
+        {label: '4', value: 1 }
+    ]; 
 
 class Search extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            toggleCheckBox: false,
-            toggleCheckBox2: false,
-            selectedIndex: 0
-        };
+        // this.state = {
+        //     toggleCheckBox: false,
+        //     toggleCheckBox2: false,
+        //     selectedIndex: 0
+        // };
     }
-   
+
+    state = {
+        data: [],
+        values: [],
+        search: '',
+        region: '',
+        price_min: '',
+        price_max: '',
+        marka: '',
+        god_min: '',
+        god_max: '',
+        kpp: '',
+        mesta: '',
+        s_voditelem: '',
+        vodila_25: '',
+    }
+
+    handlePrice_min = (text) => {
+        this.setState({ price_min: text })
+    }
+
+    handlePrice_max = (text) => {
+        this.setState({ price_max: text })
+    }
+
+    handleMarka = (text) => {
+        this.setState({ marka: text })
+    }
+
+    handleGod_min = (text) => {
+        this.setState({ god_min: text })
+    }
+
+    handleGod_max = (text) => {
+        this.setState({ god_max: text })
+    }
+
+    handleKPP = (text) => {
+        this.setState({ kpp: text })
+    }
+
+    handleMesta = (text) => {
+        this.setState({ mesta: text })
+    }
+
+    handleS_voditelem = (text) => {
+        this.setState({ s_voditelem: text })
+    }
+
+    handleVoditel_25 = (text) => {
+        this.setState({ vodila_25: text })
+    }
+
+    // handleChange = (index) => {
+    //     let checked = [...this.state.checked];
+    //     checked[index] = !checked[index];
+    //     this.setState({ checked });
+    // }
+
     handleIndexChange = index => {
         this.setState({
           ...this.state,
           selectedIndex: index
         });
-      };
+    };
+
     render(){
         // const [toggleCheckBox, setToggleCheckBox] = useState(false)
+
+        // componentWillMount = () => {
+        //     let { data, checked } = this.state;
+        //     let intialCheck = data.map(x => false);
+        //     this.setState({ checked: intialCheck })
+        // }
+
         return (
             <View style={styles.container}>
                  <View style={styles.header}>
@@ -42,17 +112,17 @@ class Search extends React.Component {
                    </View>
                     <View style={styles.otdo}>
                    <View style={styles.SegmentedControlTab1}>
-                   <SegmentedControlTab
-                       tabTextStyle={styles.tabTextStyle}
-                    // allowFontScaling={false}
-          values={["Алматы", "Астана"]}
-          tabStyle={styles.tabStyle}
-          selectedIndex={this.state.selectedIndex}
-          onTabPress={this.handleIndexChange}
-          activeTabStyle={styles.activeTabStyle}
-        //   selectedIndex={1}
-        //   onTabPress={index => this.setState({ selected: index })}
-        />
+                    <SegmentedControlTab
+                            tabTextStyle={styles.tabTextStyle}
+                            // allowFontScaling={false}
+                            values={["Алматы", "Астана"]}
+                            tabStyle={styles.tabStyle}
+                            selectedIndex={this.state.selectedIndex}
+                            onTabPress={this.handleIndexChange}
+                            activeTabStyle={styles.activeTabStyle}
+                            //   selectedIndex={1}
+                            //   onTabPress={index => this.setState({ selected: index })}
+                        />
                    </View>
                     </View>
                 </View>
@@ -63,77 +133,107 @@ class Search extends React.Component {
                     <View style={styles.otdo}>
                         <View style={styles.head_title2}>
                             <Text style={styles.text1}>от</Text>
-                            <TextInput style={styles.input} defaultValue="20 000"/>
+                            <TextInput style={styles.input} 
+                            defaultValue="20 000"
+                            keyboardType="number-pad"
+                            onChangeText={this.handlePrice_min}
+                            />
                         </View>
                         <View style={styles.head_title3}>
                             <Text style={styles.text1}>до</Text>
-                            <TextInput style={styles.input} defaultValue="40 000"/>
+                            <TextInput style={styles.input} 
+                            defaultValue="40 000"
+                            keyboardType="number-pad"
+                            onChangeText={this.handlePrice_max}
+                            />
                             <Text style={styles.text1}>тг</Text>
                         </View>
                     </View>
                 </View>
                 <View style={styles.header}>
                     <View style={styles.head_title}>
-                    <Text style={styles.text}>Марка</Text>
+                        <Text style={styles.text}>Марка</Text>
                     </View>
                     <View style={styles.marka}>
-                    <Text style={styles.text2}>Huyndai</Text>
-                    <Text style={styles.text2}>Nissan</Text>
-                    <Text style={styles.text2}>Toyota</Text>
-                    <Image style={styles.image1} source={require('../images/threedot.png')} />
+                        <Text style={styles.text2}>Huyndai</Text>
+                        <Text style={styles.text2}>Nissan</Text>
+                        <Text style={styles.text2}>Toyota</Text>
+                        <Image style={styles.image1} source={require('../images/threedot.png')} />
                     </View>
                 </View>
                 <View style={styles.header}>
                     <View style={styles.head_title}>
-                    <Text style={styles.text}>Год</Text>
+                        <Text style={styles.text}>Год</Text>
                     </View>
                     <View style={styles.otdo}>
                         <View style={styles.head_title2}>
                             <Text style={styles.text1}>от</Text>
-                            <TextInput style={styles.input} defaultValue="0"/>
+                            <TextInput style={styles.input} 
+                                defaultValue="0"
+                                maxLength={4}
+                                keyboardType="number-pad"
+                                onChangeText={this.handleGod_min}
+                            />
                         </View>
                         <View style={styles.head_title3}>
                             <Text style={styles.text1}>до</Text>
-                            <TextInput style={styles.input} defaultValue="2021"/>
-                            <Text style={styles.text1}>тг</Text>
+                            <TextInput style={styles.input} 
+                                defaultValue="2021"
+                                maxLength={4}
+                                keyboardType="number-pad"
+                                onChangeText={this.handleGod_max}
+                            />
+                            {/* <Text style={styles.text1}>тг</Text> */}
                         </View>
                     </View>
                 </View>
                 <View style={styles.header}>
                     <View style={styles.head_title}>
-                    <Text style={styles.text}>КПП</Text>
+                        <Text style={styles.text}>КПП</Text>
                     </View>
-                    <View style={styles.otdo}>  
-                    <RadioForm style = {styles.radio_props} 
-          radio_props={radio_props}
-          initial={2}
-        //   formHorizontal={true}
-          onPress={(value) => {this.setState({value:value})}}
-          buttonColor={'#000'}
-          selectedButtonColor={'#000'}
-          labelStyle={{fontSize: 13}}
-          buttonOuterSize={20}
-          buttonSize={10}
-          label
-        /> 
+                    <View style={styles.otdo}>
+                        {/* <CheckBox
+                            // title={item.name}
+                            checkedIcon='dot-circle-o'
+                            uncheckedIcon='circle-o'
+                            // checked={this.state.checked[index]}
+                            textStyle={styles.checkboxText}
+                            containerStyle={styles.checkbox}
+                            onPress={() => this.handleChange(index)}
+                            checkedColor="#32B2FF"
+                            uncheckedColor="#32B2FF"
+                        /> */}
+                        <RadioForm style = {styles.radio_props} 
+                            radio_props={radio_props}
+                            initial={2}
+                            //   formHorizontal={true}
+                            onPress={(value) => {this.setState({value:value})}}
+                            // onPress={() => this.handleChange(index)}
+                            buttonColor={'#000'}
+                            selectedButtonColor={'#000'}
+                            labelStyle={{fontSize: 13}}
+                            buttonOuterSize={20}
+                            buttonSize={10}
+                            label
+                        /> 
                     </View>
                 </View>
                 <View style={styles.header2}>
                     <View style={styles.head_title}>
-                    <Text style={styles.text3}>Кол-во мест</Text>
+                    <   Text style={styles.text3}>Кол-во мест</Text>
                     </View>
                     <View style={styles.otdo}>
-                    <RadioForm style = {styles.radio_props2} 
-                    radio_props={radio_props2}
-                     initial={2}
-                    //   formHorizontal={true}
-                     onPress={(value) => {this.setState({value:value})}}
-                    buttonColor={'#000'}
-                    selectedButtonColor={'#000'}
-                     labelStyle={{fontSize: 13}}
-                    buttonOuterSize={20}
-                     buttonSize={10}
-                     /> 
+                        <RadioForm style = {styles.radio_props2} 
+                            radio_props={radio_props2}
+                            initial={2}
+                            //   formHorizontal={true}
+                            onPress={(value) => {this.setState({value:value})}}
+                            buttonColor={'#000'}
+                            selectedButtonColor={'#000'}
+                            labelStyle={{fontSize: 13}}
+                            buttonOuterSize={20}
+                            buttonSize={10}
+                        /> 
                     </View>
                 </View>
                 <View style={styles.header3}>
@@ -215,13 +315,13 @@ class Search extends React.Component {
   // Enable the option to swipe between months. Default = false
   enableSwipeMonths={true}
 />
-                </View>
+            </View>
                 <View style={styles.header5}>
+
                     <View style={styles.loginButtonSection}>
                         <Button
                         title="Найти машину"
-                        color="#000"
-                         // onPress={() => this.props.navigation.navigate('RegScreen')}
+                        color="#000" 
                         /> 
                     </View>
                 </View>
@@ -260,6 +360,14 @@ const styles = StyleSheet.create({
     header4: {
 
     },
+    text_button: {
+        color: '#fff'
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#000000",
+        padding: 10,
+      },
     header5: {
         paddingBottom: 30,
     },
@@ -287,7 +395,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 14,
         fontWeight: 'bold',
-        width: 74
+        width: 82
     },
     SegmentedControlTab1:{
         width:200

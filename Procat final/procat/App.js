@@ -30,9 +30,10 @@ const Stack = createStackNavigator();
 function App() {
   return (
       <NavigationContainer>
-          <Stack.Navigator initialRouteName='LoginScreen'>
+          <Stack.Navigator initialRouteName='VhodKakPartner'>
               {/* <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={Login} /> */}
               {/* <Stack.Screen options={{ headerShown: false }} name="RegScreen" component={Reg} /> */}
+              
               {/* <Stack.Screen options={{ headerShown: false }} name="TovarScreen" component={Tovar} /> */}
               {/* <Stack.Screen options={{ headerShown: false }} name="ResultScreen" component={Result} /> */}
               {/* <Stack.Screen options={{ headerShown: false }} name="FilterScreen" component={Filter} /> */}
@@ -44,12 +45,14 @@ function App() {
               {/* <Stack.Screen options={{ headerShown: false }} name="AddTovarScreen" component={AddTovar} /> */}
               {/* <Stack.Screen options={{ headerShown: false }} name="MyOb" component={MyOb} /> */}
               {/* <Stack.Screen options={{ headerShown: false }} name="MyZakaz" component={MyZakaz} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="AcceptScreen" component={Accept} /> */}
               {/* <Stack.Screen options={{ headerShown: false }} name="MenuPartnerScreen" component={MenuPart} /> */}
               {/* <Stack.Screen options={{ headerShown: false }} name="SettingScreen" component={Settings} /> */}
+
               {/* <Stack.Screen options={{ headerShown: false }} name="VhodKakPartner" component={VKP} /> */}
+              {/* <Stack.Screen options={{ headerShown: false }} name="AcceptScreen" component={Accept} /> */}
+
               {/* <Stack.Screen options={{ headerShown: false }} name="AddObyavlenie" component={AddOb} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="SearchScreen" component={Search} /> */}
+              <Stack.Screen options={{ headerShown: false }} name="SearchScreen" component={Search} />
           </Stack.Navigator>
       </NavigationContainer>
   );

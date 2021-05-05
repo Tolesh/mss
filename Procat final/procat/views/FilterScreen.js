@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
 
 
 class Filter extends React.Component {

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { View, KeyboardAvoidingView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, Button, Keyboard,Image}  from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { CheckBox } from 'react-native';
 import CodeInput from 'react-native-code-input';
 import ModalDropdown from 'react-native-modal-dropdown';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
@@ -186,7 +186,7 @@ class AddOb extends React.Component {
                         <TextInput style={styles.input4}/>
                     </View>
                     <TouchableOpacity style={styles.button} >
-                        <Text style={{color:'#fff'}}>Войти как партнер</Text>
+                        <Text style={{color:'#fff'}}>Добавить объявление</Text>
                     </TouchableOpacity>
                 </View>
             </View>
