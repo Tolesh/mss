@@ -285,7 +285,7 @@ class Search extends React.Component {
                     /> */}
                         <CheckBox
                             disabled={false}
-                            // value={this.state.toggleCheckBox}
+                            value={this.state.vodila_25}
                             onValueChange={(value) =>
                                 this.setState({
                                     vodila_25: value,
