@@ -37,8 +37,8 @@ class Search extends React.Component {
         god_max: '',
         kpp: '',
         mesta: '',
-        s_voditelem: '',
-        vodila_25: '',
+        s_voditelem: false,
+        vodila_25: false,
         calendar_date: '',
     }
 
@@ -266,11 +266,17 @@ class Search extends React.Component {
                 <View style={styles.header3}>
                     <View style={styles.checkboxVod}>
                     <CheckBox
-                        disabled={false}
-                        onPress={(value) => { this.setState({ s_voditelem: value }) }}
-                        tintColors={{true: '#000000'}}
-                        style={styles.checkbox}
-                    />
+                            disabled={false}
+                            value={this.state.vodila_25}
+                            onValueChange={(value) =>
+                                this.setState({
+                                    vodila_25: value,
+                                })
+                            }
+                            tintColors={{true: '#000000'}}
+                            style={styles.checkbox}
+                            // onPress={(value) => { this.setState({ vodila_25: value }) }}
+                        />
                     <Text style={styles.text4}>С водителем</Text>
                     </View>
                 </View>
@@ -285,10 +291,10 @@ class Search extends React.Component {
                     /> */}
                         <CheckBox
                             disabled={false}
-                            // value={this.state.toggleCheckBox}
+                            value={this.state.s_voditelem}
                             onValueChange={(value) =>
                                 this.setState({
-                                    vodila_25: value,
+                                    s_voditelem: value,
                                 })
                             }
                             tintColors={{true: '#000000'}}
