@@ -1,26 +1,49 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList, TouchableHighlight } from 'react-native';
 
 
 class Filter extends React.Component {
+
+    // constructor(props) {
+    //     super(props);
+    
+    //     this.state = {
+    //         backgroundColor: '#979797', // default button color goes here, grey is default
+    //     };
+    //   }
+
     constructor(props) {
         super(props);
+        this.state = {
+          pressStatus: false 
+        };
     }
 
-    state = {
-        StyleText: false,
+    _onHideUnderlay(){
+        this.setState({ pressStatus: false });
     }
 
-    test = () => {
-
+    _onShowUnderlay(){
+        this.setState({ pressStatus: true });
     }
+
+    // onButtonPress = () => {
+    //     if(this.state.buttonColor=='#ff002b')
+    //     {
+    //       this.setState({ backgroundColor: '#979797' }) // grey
+    //     }
+    //     else {
+    //       this.setState({ backgroundColor: '#ff002b' }) // red
+    //     }
+    // }
 
     // this.setState({ StyleText: true });
 
     render(){
-        const { StyleText } = this.state;
+        // const { StyleText } = this.state;
+        // this.state.active == true ? console.log("selected") : console.log("unselected")
             
         return (
             <View style={styles.container}>
@@ -33,7 +56,19 @@ class Filter extends React.Component {
                     </View>
                 </View>
                 <View style={styles.body}>
-                    <Text style={StyleText ? styles.active : styles.no_active}>Nissan</Text>
+                    {/* <Button onPress={this.onButtonPress} 
+                        title="Nissan"
+                    /> */}
+                    <TouchableHighlight
+                        onPress={()=>{}}
+                        activeOpacity={0.5}
+                        style={this.state.pressStatus ? styles.active : styles.no_active}
+                        onHideUnderlay={this._onHideUnderlay.bind(this)}
+                        onShowUnderlay={this._onShowUnderlay.bind(this)}
+                        >
+                        <Text>Nissan</Text>
+                    </TouchableHighlight>
+                    <Text style={styles.active}>Nissan</Text>
                     <Text style={styles.car_name}>Lexus</Text>
                     <Text style={styles.car_name}>Toyota</Text>
                     <Text style={styles.car_name}>Honda</Text>
