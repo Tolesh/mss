@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList, TouchableHighlight } from 'react-native';
+import { CheckBox } from 'react-native';
 
 const GLOBAL = require('../views/Globals');
 const getListUrl = GLOBAL.BASE_URL + 'HistoryScreen.php?action=get_marks&lang=1';
@@ -28,11 +29,11 @@ class Filter extends React.Component {
         marks: [],
     }
 
-    componentWillMount() {
-        let { data, checked } = this.state;
-        let intialCheck = data.map(x => false);
-        this.setState({ checked: intialCheck })
-    }
+    // componentWillMount() {
+    //     let { data, checked } = this.state;
+    //     let intialCheck = data.map(x => false);
+    //     this.setState({ checked: intialCheck })
+    // }
 
     componentDidMount = async () => {
         const response = await fetch(getListUrl);
@@ -88,16 +89,31 @@ class Filter extends React.Component {
                         extraData={this.state}
                         renderItem={({ item, index }) =>
                             <View>
-                                <CheckBox
+                                {/* <CheckBox
                                     title={item.value}
                                     checkedIcon='dot-circle-o'
                                     uncheckedIcon='circle-o'
-                                    checked={checked[index]}
+                                    // checked={checked[index]}
                                     textStyle={styles.checkboxText}
                                     containerStyle={styles.checkbox}
                                     onPress={() => this.handleChange(index)}
                                     checkedColor="#32B2FF"
                                     uncheckedColor="#32B2FF"
+                                /> */}
+                                <CheckBox
+                                    center
+                                    title={item.value}
+                                    textStyle={styles.checkboxText}
+                                    containerStyle={styles.checkbox}
+                                    onPress={() => this.handleChange(index)}
+                                    checkedColor="#32B2FF"
+                                    uncheckedColor="#32B2FF"
+                                    iconRight
+                                    iconType='material'
+                                    checkedIcon='clear'
+                                    uncheckedIcon='add'
+                                    checkedColor='red'
+                                    // checked={this.state.checked}
                                 />
                             </View>
                         }
