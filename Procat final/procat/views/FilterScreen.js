@@ -3,6 +3,8 @@ import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList, TouchableHighlight } from 'react-native';
 
+const GLOBAL = require('../views/Globals');
+const getListUrl = GLOBAL.BASE_URL + 'HistoryScreen.php?action=get_marks&lang=1';
 
 class Filter extends React.Component {
 
@@ -21,13 +23,31 @@ class Filter extends React.Component {
         };
     }
 
-    _onHideUnderlay(){
-        this.setState({ pressStatus: false });
+    state = {
+        values: [],
+        marks: [],
     }
 
-    _onShowUnderlay(){
-        this.setState({ pressStatus: true });
+    componentWillMount() {
+        let { data, checked } = this.state;
+        let intialCheck = data.map(x => false);
+        this.setState({ checked: intialCheck })
     }
+
+    componentDidMount = async () => {
+        const response = await fetch(getListUrl);
+        const marks = await response.json();
+
+        this.setState({ marks });
+    }
+
+    // _onHideUnderlay(){
+    //     this.setState({ pressStatus: false });
+    // }
+
+    // _onShowUnderlay(){
+    //     this.setState({ pressStatus: true });
+    // }
 
     // onButtonPress = () => {
     //     if(this.state.buttonColor=='#ff002b')
@@ -38,6 +58,13 @@ class Filter extends React.Component {
     //       this.setState({ backgroundColor: '#ff002b' }) // red
     //     }
     // }
+
+    handleChange = (index) => {
+        let checked = [...this.state.checked];
+        checked[index] = !checked[index];
+        this.setState({ checked });
+    }
+
 
     // this.setState({ StyleText: true });
 
@@ -56,10 +83,29 @@ class Filter extends React.Component {
                     </View>
                 </View>
                 <View style={styles.body}>
+                    <FlatList
+                        data={this.state.marks}
+                        extraData={this.state}
+                        renderItem={({ item, index }) =>
+                            <View>
+                                <CheckBox
+                                    title={item.value}
+                                    checkedIcon='dot-circle-o'
+                                    uncheckedIcon='circle-o'
+                                    checked={checked[index]}
+                                    textStyle={styles.checkboxText}
+                                    containerStyle={styles.checkbox}
+                                    onPress={() => this.handleChange(index)}
+                                    checkedColor="#32B2FF"
+                                    uncheckedColor="#32B2FF"
+                                />
+                            </View>
+                        }
+                    />
                     {/* <Button onPress={this.onButtonPress} 
                         title="Nissan"
                     /> */}
-                    <TouchableHighlight
+                    {/* <TouchableHighlight
                         onPress={()=>{}}
                         activeOpacity={0.5}
                         style={this.state.pressStatus ? styles.active : styles.no_active}
@@ -75,7 +121,7 @@ class Filter extends React.Component {
                     <Text style={styles.car_name}>Cadilac</Text>
                     <Text style={styles.car_name}>BMW</Text>
                     <Text style={styles.car_name}>Mersedes</Text>
-                    <Text style={styles.car_name}>Hyundai</Text>
+                    <Text style={styles.car_name}>Hyundai</Text> */}
                 </View>
             </View>
         );
