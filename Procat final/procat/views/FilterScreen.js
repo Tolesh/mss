@@ -1,78 +1,82 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList, TouchableHighlight } from 'react-native';
-import { CheckBox } from 'react-native';
+import { Button } from 'react-native-elements';
+import { StyleSheet, Text, View, Image, Pressable, TextInput,FlatList,Form,TouchableOpacity,Dimensions,SafeAreaView } from 'react-native';
 
 const GLOBAL = require('../views/Globals');
-const getListUrl = GLOBAL.BASE_URL + 'HistoryScreen.php?action=get_marks&lang=1';
+const getUsersUrl = GLOBAL.BASE_URL + 'MarksScreen.php?action=get_marks&lang=1';
+const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 
+const dimensions = Dimensions.get('window');
+const windowHeight = dimensions.height;
 class Filter extends React.Component {
 
+    
+    componentDidMount = async () => {
+        const values_response = await fetch(valuesJsonUrl);
+        const values = await values_response.json();
+
+        this.setState({ values });
+
+        this.getUsers();
+    }
+    getUsers = () => {
+        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
+        const request = new Request(getUsersUrl, { method: 'POST', body: json });
+        console.log(json);
+        fetch(request)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                this.setState({ data: response });
+                this.arrayholder = response;
+            }).catch(error => {
+                console.error(error);
+            });
+    }
+    searchFilterFunction = (text) => {
+        const newData = this.arrayholder.filter(item => {
+            const itemData = `${item.name.toUpperCase()} ${item.lastname.toUpperCase()}`;
+            const textData = text.toUpperCase();
+            
+            return itemData.indexOf(textData) > -1;
+        });
+
+        this.setState({ data: newData });
+        this.setState({ search: text });
+    };
     // constructor(props) {
     //     super(props);
     
-    //     this.state = {
-    //         backgroundColor: '#979797', // default button color goes here, grey is default
-    //     };
-    //   }
+    // this.state = {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-          pressStatus: false 
-        };
-    }
-
-    state = {
-        values: [],
-        marks: [],
-    }
-
-    // componentWillMount() {
-    //     let { data, checked } = this.state;
-    //     let intialCheck = data.map(x => false);
-    //     this.setState({ checked: intialCheck })
+    //   };
     // }
-
-    componentDidMount = async () => {
-        const response = await fetch(getListUrl);
-        const marks = await response.json();
-
-        this.setState({ marks });
+    state ={
+        toggle: true,
+        ides: 0
     }
+_onPress(id){
+    this.state.ides = id
 
-    // _onHideUnderlay(){
-    //     this.setState({ pressStatus: false });
-    // }
-
-    // _onShowUnderlay(){
-    //     this.setState({ pressStatus: true });
-    // }
-
-    // onButtonPress = () => {
-    //     if(this.state.buttonColor=='#ff002b')
-    //     {
-    //       this.setState({ backgroundColor: '#979797' }) // grey
-    //     }
-    //     else {
-    //       this.setState({ backgroundColor: '#ff002b' }) // red
-    //     }
-    // }
-
-    handleChange = (index) => {
-        let checked = [...this.state.checked];
-        checked[index] = !checked[index];
-        this.setState({ checked });
-    }
-
-
-    // this.setState({ StyleText: true });
+   if(this.state.ides == id){
+        const newState = !this.state.toggle;
+    this.setState({toggle:newState})
+   }
+    
+}
 
     render(){
-        // const { StyleText } = this.state;
-        // this.state.active == true ? console.log("selected") : console.log("unselected")
-            
+ const {toggle} = this.state;
+ const ButtonBG = toggle?"white":"black";
+ const textColor = toggle?"black":"white";    
+ let { data, search } = this.state;       
         return (
             <View style={styles.container}>
                 <View style={styles.head}>
@@ -84,54 +88,32 @@ class Filter extends React.Component {
                     </View>
                 </View>
                 <View style={styles.body}>
-                    <FlatList
-                        data={this.state.marks}
-                        extraData={this.state}
-                        renderItem={({ item, index }) =>
-                            <View>
-                                {/* <CheckBox
-                                    title={item.value}
-                                    checkedIcon='dot-circle-o'
-                                    uncheckedIcon='circle-o'
-                                    // checked={checked[index]}
-                                    textStyle={styles.checkboxText}
-                                    containerStyle={styles.checkbox}
-                                    onPress={() => this.handleChange(index)}
-                                    checkedColor="#32B2FF"
-                                    uncheckedColor="#32B2FF"
-                                /> */}
-                                <CheckBox
-                                    center
-                                    title={item.value}
-                                    textStyle={styles.checkboxText}
-                                    containerStyle={styles.checkbox}
-                                    onPress={() => this.handleChange(index)}
-                                    checkedColor="#32B2FF"
-                                    uncheckedColor="#32B2FF"
-                                    iconRight
-                                    iconType='material'
-                                    checkedIcon='clear'
-                                    uncheckedIcon='add'
-                                    checkedColor='red'
-                                    // checked={this.state.checked}
-                                />
+                <SafeAreaView scrollEnabled={true}>
+                    <FlatList 
+                        data={this.state.data}
+                        keyExtractor={(item,index) => item.id}
+                        renderItem={({ item }) => (
+                            <View style={styles.bb}>
+                            <TouchableOpacity
+                            onPress={()=>this._onPress(item.id)}
+                            style={{backgroundColor:ButtonBG}}
+                            >
+                                <Text style={{color:textColor,fontSize:14,marginLeft:'7%',marginTop: '1%',marginBottom: '1%'}}>{item.value}</Text>
+                            </TouchableOpacity>
                             </View>
-                        }
-                    />
-                    {/* <Button onPress={this.onButtonPress} 
-                        title="Nissan"
-                    /> */}
-                    {/* <TouchableHighlight
-                        onPress={()=>{}}
-                        activeOpacity={0.5}
-                        style={this.state.pressStatus ? styles.active : styles.no_active}
-                        onHideUnderlay={this._onHideUnderlay.bind(this)}
-                        onShowUnderlay={this._onShowUnderlay.bind(this)}
-                        >
-                        <Text>Nissan</Text>
-                    </TouchableHighlight>
-                    <Text style={styles.active}>Nissan</Text>
-                    <Text style={styles.car_name}>Lexus</Text>
+                            )}
+                            />
+                </SafeAreaView>
+                {/* <View style={styles.bb}>
+                <TouchableOpacity
+                onPress={()=>this._onPress()}
+                style={{backgroundColor:ButtonBG}}
+                >
+                    <Text style={{color:textColor,fontSize:14,marginLeft:'7%',marginTop: '1%',marginBottom: '1%'}}>Nissan</Text>
+                </TouchableOpacity>
+                </View> */}
+                    {/* <Text style={StyleText ? styles.active : styles.no_active}>Nissan</Text> */}
+                    {/* <Text style={styles.car_name}>Lexus</Text>
                     <Text style={styles.car_name}>Toyota</Text>
                     <Text style={styles.car_name}>Honda</Text>
                     <Text style={styles.car_name}>Cadilac</Text>
@@ -153,6 +135,9 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
     },
+    bb: {
+        marginBottom: "3%"
+    },
     head: {
         flexDirection: 'row',
         // alignItems: 'center',
@@ -165,17 +150,25 @@ const styles = StyleSheet.create({
     },
     active: {
         backgroundColor: 'black',
-        color: 'white',
-        paddingLeft: 30,
-        fontSize: 14,
-        marginBottom: 15,
+        // color: 'white',
+        // paddingLeft: 30,
+        // fontSize: 14,
+        // marginBottom: 15,
+    },
+    buttonStyle: {
+        backgroundColor: "#fff",
+    },
+    titleStyle: {
+        color: "#000",
+        paddingRight: "76%",
+        fontSize: 14
     },
     no_active: {
         backgroundColor: 'white',
-        color: 'black',
-        paddingLeft: 30,
-        fontSize: 14,
-        marginBottom: 15,
+        // color: 'black',
+        // paddingLeft: 30,
+        // fontSize: 14,
+        // marginBottom: 15,
     },
     text: {
         fontSize: 18,
