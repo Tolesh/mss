@@ -4,6 +4,7 @@ import { Platform, StyleSheet, Text, View, Button, Image, Pressable } from 'reac
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HeaderBackButton } from '@react-navigation/stack';
+import { GlobalContextProvider } from './views/GlobalContext';
 
 import Login from "./views/LoginScreen";
 import Reg from "./views/RegScreen";
