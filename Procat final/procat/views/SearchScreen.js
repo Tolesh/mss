@@ -113,7 +113,7 @@ class Search extends React.Component {
         this.setState({region: index });
     };
 
-    getParsedDate(strDate) {
+    getParsedDate(strDate) { 
         var strSplitDate = String(strDate).split(' ');
         var date = new Date(strSplitDate[0]);
 
@@ -131,6 +131,11 @@ class Search extends React.Component {
 
         date = dd + " " + mm + " " + yyyy;
         return date.toString();
+    }
+
+    showMore = () => {
+        this.props.global.selected = [];
+        this.props.navigation.navigate('FilterScreen');
     }
 
     Search = () => {
@@ -228,7 +233,7 @@ class Search extends React.Component {
                                 <Text style={styles.text2}>{item}</Text> 
                             ))
                         }
-                        <Pressable onPress={() => this.props.navigation.navigate('FilterScreen')}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
+                        <Pressable onPress={this.showMore}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
                     </View>
                 </View>
                 <View style={styles.header}>
