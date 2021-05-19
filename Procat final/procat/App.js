@@ -38,7 +38,7 @@ function App() {
                 
                 {/* <Stack.Screen options={{ headerShown: false }} name="TovarScreen" component={Tovar} /> */}
                 {/* <Stack.Screen options={{ headerShown: false }} name="ResultScreen" component={Result} /> */}
-                {/* <Stack.Screen options={{ headerShown: false }} name="FilterScreen" component={Filter} /> */}
+                <Stack.Screen options={{ headerShown: false }} name="FilterScreen" component={Filter} />
                 {/* <Stack.Screen options={{ headerShown: false }} name="MenuScreen" component={Menu} /> */}
                 {/* <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen" component={Rebut} /> */}
                 {/* <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen_2" component={Rebut_2} /> */}

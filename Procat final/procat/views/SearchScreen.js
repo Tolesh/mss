@@ -12,7 +12,6 @@ const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'KeslerFilter.php?action=get_users&lang=1';
 const getMarksUrl = GLOBAL.BASE_URL + 'MarksScreen.php?action=get_marks&lang=1';
 const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
-// const Context = React.createContext("default");
 
 var radio_props = [
     {label: 'Автомат', value: 0 },
@@ -49,37 +48,30 @@ class Search extends React.Component {
     }
     componentDidMount = async () => {
         
-        this.getUsers();
-
-        console.log(this.state.marksArr)
-        // let { data, checked } = this.state;
-        // let intialCheck = data.map(x => false);
-        // this.setState({ checked: intialCheck })
-        // console.log(this.props.global.selected)
     }
     // onChangeCheck() {
     //     this.setState({ checked: !this.state.checked})
     // } 
-    getUsers = () => {
-        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
-        const request = new Request(getMarksUrl, { method: 'POST', body: json });
-        // console.log(json);
-        fetch(request)
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    throw new Error('Something went wrong on api server!');
-                }
-            })
-            .then(response => {
-                this.setState({ marksArr: response });
-                // console.log(this.state.marksArr)
+    // getUsers = () => {
+    //     var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
+    //     const request = new Request(getMarksUrl, { method: 'POST', body: json });
+    //     // console.log(json);
+    //     fetch(request)
+    //         .then(response => {
+    //             if (response.status === 200) {
+    //                 return response.json();
+    //             } else {
+    //                 throw new Error('Something went wrong on api server!');
+    //             }
+    //         })
+    //         .then(response => {
+    //             // this.setState({ marksArr: response });
+    //             // console.log(response) 
                
-            }).catch(error => {
-                console.error(error);
-            });
-    }
+    //         }).catch(error => {
+    //             console.error(error);
+    //         });
+    // }
  
     handlePrice_min = (text) => {
         this.setState({ price_min: text })
@@ -231,10 +223,11 @@ class Search extends React.Component {
                         <Text style={styles.text}>Марка</Text>
                     </View>
                     <View style={styles.marka}>
-                    <Text style={styles.text2}>{this.state.selectedMarks}</Text>
-                        {/* <Text style={styles.text2}>Huyndai</Text> */}
-                        {/* <Text style={styles.text2}>Nissan</Text> */}
-                        {/* <Text style={styles.text2}>Toyota</Text> */}
+                        {
+                            this.props.global.selected.map((item, key) => (
+                                <Text style={styles.text2}>{item}</Text> 
+                            ))
+                        }
                         <Pressable onPress={() => this.props.navigation.navigate('FilterScreen')}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
                     </View>
                 </View>

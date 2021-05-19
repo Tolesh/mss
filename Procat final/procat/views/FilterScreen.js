@@ -19,6 +19,7 @@ class Filter extends React.Component {
         // toggle: true,   
         data: [],
         values: [],
+        selected_mark_titles: [],
     }
     componentWillMount() {
         let { data, checked } = this.state;
@@ -93,22 +94,23 @@ class Filter extends React.Component {
     
 // }
 
-handleChange = (index) => {
+handleChange = (value, index) => {
     let checked = [...this.state.checked];
     checked[index] = !checked[index];
     this.setState({ checked });
-    
+    this.state.selected_mark_titles.push(value);
 }
+
 toggle = () => {
-    this.props.global.selected = this.state.checked;
+    let newArray = [];
+    this.state.selected_mark_titles.forEach(element => {
+        if (!newArray.some(o => o[0] === element[0])) {
+            newArray.push(element)
+        }
+    });
+    
+    this.props.global.selected = newArray;
     this.props.navigation.navigate('SearchScreen');
-    // console.log(this.state.checked)
-    console.log(this.props.global.selected)
-    // if (this.props.global.isMenuOpen == false) {
-    //     this.props.global.switchToOpen();
-    // } else {
-    //     this.props.global.switchToClose();
-    // }
 }
     render(){
 //  const {toggle} = this.state;
@@ -131,7 +133,7 @@ toggle = () => {
                     <FlatList 
                         data={this.state.data}
                         extraData={this.state}
-                        renderItem={({ item,index }) => (
+                        renderItem={({ item, index }) => (
                             <View style={styles.bb}>
                                  <CheckBox
                                     title={item.value}
@@ -140,7 +142,7 @@ toggle = () => {
                                     checked={checked[index]}
                                     textStyle={styles.checkboxText}
                                     containerStyle={styles.checkbox}
-                                    onPress={() => this.handleChange(index)}
+                                    onPress={() => this.handleChange(item.value, index)}
                                     checkedColor="#000"
                                     uncheckedColor="#000"
                                 />
