@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { withGlobalContext } from './GlobalContext';
 const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'KeslerFilter.php?action=get_users&lang=1';
+const getMarksUrl = GLOBAL.BASE_URL + 'MarksScreen.php?action=get_marks&lang=1';
 const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 // const Context = React.createContext("default");
 
@@ -29,6 +30,7 @@ class Search extends React.Component {
 
     state = {
         data: [],
+        marksArr: [],
         values: [],
         search: '',
         region: '',
@@ -43,17 +45,42 @@ class Search extends React.Component {
         vodila_25: false,
         calendar_date: '',
         checked: false,
-
+        selectedMarks: ''
     }
-    // componentWillMount = () => {
-    //     let { data, checked } = this.state;
-    //     let intialCheck = data.map(x => false);
-    //     this.setState({ checked: intialCheck })
-    // }
+    componentDidMount = async () => {
+        
+        this.getUsers();
+
+        console.log(this.state.marksArr)
+        // let { data, checked } = this.state;
+        // let intialCheck = data.map(x => false);
+        // this.setState({ checked: intialCheck })
+        // console.log(this.props.global.selected)
+    }
     // onChangeCheck() {
     //     this.setState({ checked: !this.state.checked})
     // } 
-
+    getUsers = () => {
+        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
+        const request = new Request(getMarksUrl, { method: 'POST', body: json });
+        // console.log(json);
+        fetch(request)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                this.setState({ marksArr: response });
+                // console.log(this.state.marksArr)
+               
+            }).catch(error => {
+                console.error(error);
+            });
+    }
+ 
     handlePrice_min = (text) => {
         this.setState({ price_min: text })
     }
@@ -117,7 +144,7 @@ class Search extends React.Component {
     Search = () => {
         var json = '{"region": "' + this.state.region + '", "price_min": "' + this.state.price_min + '", "price_max": "' + this.state.price_max + '", "marka": "' + this.state.marka + '", "god_min": "' + this.state.god_min + '", "god_max": "' + this.state.god_max + '", "kpp": "' + this.state.kpp + '", "mesta": "' + this.state.mesta + '", "s_vodiloy": "' + this.state.s_voditelem + '", "voditel 25+": "' + this.state.vodila_25 + '", "calendar": "' + this.state.calendar_date + '",}';
         // const request = new Request(authUrl, { method: 'POST', body: json });
-        console.log(json);
+        // console.log(json);
        
         // fetch(request)
         //     .then(response => {
@@ -153,7 +180,7 @@ class Search extends React.Component {
         }
         
     render(){
-
+// console.log({this.props.global.selected})
       
 
         return (
@@ -204,7 +231,7 @@ class Search extends React.Component {
                         <Text style={styles.text}>Марка</Text>
                     </View>
                     <View style={styles.marka}>
-                        {this.props.global.selected}
+                    <Text style={styles.text2}>{this.state.selectedMarks}</Text>
                         {/* <Text style={styles.text2}>Huyndai</Text> */}
                         {/* <Text style={styles.text2}>Nissan</Text> */}
                         {/* <Text style={styles.text2}>Toyota</Text> */}

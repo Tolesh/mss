@@ -48,7 +48,7 @@ class Filter extends React.Component {
     getUsers = () => {
         var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        console.log(json);
+        // console.log(json);
         fetch(request)
             .then(response => {
                 if (response.status === 200) {
@@ -97,9 +97,13 @@ handleChange = (index) => {
     let checked = [...this.state.checked];
     checked[index] = !checked[index];
     this.setState({ checked });
+    
 }
 toggle = () => {
     this.props.global.selected = this.state.checked;
+    this.props.navigation.navigate('SearchScreen');
+    // console.log(this.state.checked)
+    console.log(this.props.global.selected)
     // if (this.props.global.isMenuOpen == false) {
     //     this.props.global.switchToOpen();
     // } else {
@@ -167,7 +171,7 @@ toggle = () => {
                     <Text style={styles.car_name}>Mersedes</Text>
                     <Text style={styles.car_name}>Hyundai</Text> */}
                 </View>
-                <Pressable onPress={this.toggle}><Text>pops</Text></Pressable>
+                <TouchableOpacity onPress={this.toggle}><Text>pops</Text></TouchableOpacity>
             </View>
         );
     }
