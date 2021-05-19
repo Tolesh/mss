@@ -204,9 +204,10 @@ class Search extends React.Component {
                         <Text style={styles.text}>Марка</Text>
                     </View>
                     <View style={styles.marka}>
-                        <Text style={styles.text2}>Huyndai</Text>
-                        <Text style={styles.text2}>Nissan</Text>
-                        <Text style={styles.text2}>Toyota</Text>
+                        {this.props.global.selected}
+                        {/* <Text style={styles.text2}>Huyndai</Text> */}
+                        {/* <Text style={styles.text2}>Nissan</Text> */}
+                        {/* <Text style={styles.text2}>Toyota</Text> */}
                         <Pressable onPress={() => this.props.navigation.navigate('FilterScreen')}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
                     </View>
                 </View>

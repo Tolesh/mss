@@ -99,11 +99,12 @@ handleChange = (index) => {
     this.setState({ checked });
 }
 toggle = () => {
-    if (this.props.global.isMenuOpen == false) {
-        this.props.global.switchToOpen();
-    } else {
-        this.props.global.switchToClose();
-    }
+    this.props.global.selected = this.state.checked;
+    // if (this.props.global.isMenuOpen == false) {
+    //     this.props.global.switchToOpen();
+    // } else {
+    //     this.props.global.switchToClose();
+    // }
 }
     render(){
 //  const {toggle} = this.state;

@@ -4,24 +4,25 @@ GlobalContext = React.createContext({});
 
 export class GlobalContextProvider extends React.Component {
     state = {
-        isMenuOpen: false
+        selected: [],
+        // isMenuOpen: false
     }
 
-    switchToOpen = () => {
-        this.setState({ isMenuOpen: true });
-    }
+    // switchToOpen = () => {
+    //     this.setState({ isMenuOpen: true });
+    // }
 
-    switchToClose = () => {
-        this.setState({ isMenuOpen: false });
-    }
+    // switchToClose = () => {
+    //     this.setState({ isMenuOpen: false });
+    // }
 
     render() {
         return (
             <GlobalContext.Provider
                 value={{
                     ...this.state,
-                    switchToOpen: this.switchToOpen,
-                    switchToClose: this.switchToClose
+                    // switchToOpen: this.switchToOpen,
+                    // switchToClose: this.switchToClose
                 }}
             >
                 {this.props.children}
