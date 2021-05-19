@@ -29,32 +29,34 @@ const Stack = createStackNavigator();
 
 function App() {
   return (
-      <NavigationContainer>
-          <Stack.Navigator initialRouteName='VhodKakPartner'>
-              {/* <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={Login} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="RegScreen" component={Reg} /> */}
-              
-              {/* <Stack.Screen options={{ headerShown: false }} name="TovarScreen" component={Tovar} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="ResultScreen" component={Result} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="FilterScreen" component={Filter} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="MenuScreen" component={Menu} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen" component={Rebut} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen_2" component={Rebut_2} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="TovarScreen2" component={Tovar2} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="HistoryScreen" component={History} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="AddTovarScreen" component={AddTovar} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="MyOb" component={MyOb} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="MyZakaz" component={MyZakaz} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="MenuPartnerScreen" component={MenuPart} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="SettingScreen" component={Settings} /> */}
+      <GlobalContextProvider>
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName='VhodKakPartner'>
+                {/* <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={Login} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="RegScreen" component={Reg} /> */}
+                
+                {/* <Stack.Screen options={{ headerShown: false }} name="TovarScreen" component={Tovar} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="ResultScreen" component={Result} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="FilterScreen" component={Filter} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="MenuScreen" component={Menu} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen" component={Rebut} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen_2" component={Rebut_2} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="TovarScreen2" component={Tovar2} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="HistoryScreen" component={History} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="AddTovarScreen" component={AddTovar} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="MyOb" component={MyOb} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="MyZakaz" component={MyZakaz} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="MenuPartnerScreen" component={MenuPart} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="SettingScreen" component={Settings} /> */}
 
-              {/* <Stack.Screen options={{ headerShown: false }} name="VhodKakPartner" component={VKP} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="AcceptScreen" component={Accept} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="VhodKakPartner" component={VKP} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="AcceptScreen" component={Accept} /> */}
 
-              {/* <Stack.Screen options={{ headerShown: false }} name="AddObyavlenie" component={AddOb} /> */}
-              <Stack.Screen options={{ headerShown: false }} name="SearchScreen" component={Search} />
-          </Stack.Navigator>
-      </NavigationContainer>
+                {/* <Stack.Screen options={{ headerShown: false }} name="AddObyavlenie" component={AddOb} /> */}
+                <Stack.Screen options={{ headerShown: false }} name="SearchScreen" component={Search} />
+            </Stack.Navigator>
+        </NavigationContainer>
+      </GlobalContextProvider>
   );
 }
 
