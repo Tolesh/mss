@@ -115,7 +115,7 @@ toggle = () => {
             <View style={styles.container}>
                 <View style={styles.head}>
                     <View style={styles.test}>
-                        <Image style={styles.strelka} source={require('../images/strelka.png')} />
+                    <Pressable onPress={() => this.props.navigation.navigate('SearchScreen')}><Image style={styles.strelka} source={require('../images/strelka.png')} /></Pressable>
                     </View>
                     <View style={styles.test2}>
                         <Text style={styles.text}>Марка</Text>
@@ -136,8 +136,8 @@ toggle = () => {
                                     textStyle={styles.checkboxText}
                                     containerStyle={styles.checkbox}
                                     onPress={() => this.handleChange(index)}
-                                    checkedColor="#32B2FF"
-                                    uncheckedColor="#32B2FF"
+                                    checkedColor="#000"
+                                    uncheckedColor="#000"
                                 />
                             {/* <TouchableOpacity
                             onPress={()=>this._onPress(item.id)}

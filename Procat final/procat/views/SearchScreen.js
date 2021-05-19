@@ -39,10 +39,20 @@ class Search extends React.Component {
         god_max: '',
         kpp: '',
         mesta: '',
-        s_voditelem: '',
-        vodila_25: '',
+        s_voditelem: false,
+        vodila_25: false,
         calendar_date: '',
+        checked: false,
+
     }
+    // componentWillMount = () => {
+    //     let { data, checked } = this.state;
+    //     let intialCheck = data.map(x => false);
+    //     this.setState({ checked: intialCheck })
+    // }
+    // onChangeCheck() {
+    //     this.setState({ checked: !this.state.checked})
+    // } 
 
     handlePrice_min = (text) => {
         this.setState({ price_min: text })
@@ -141,14 +151,10 @@ class Search extends React.Component {
         //         console.error(error);
         //     }); 
         }
-
+        
     render(){
 
-        // componentWillMount = () => {
-        //     let { data, checked } = this.state;
-        //     let intialCheck = data.map(x => false);
-        //     this.setState({ checked: intialCheck })
-        // }
+      
 
         return (
             <View style={styles.container}>
@@ -201,7 +207,7 @@ class Search extends React.Component {
                         <Text style={styles.text2}>Huyndai</Text>
                         <Text style={styles.text2}>Nissan</Text>
                         <Text style={styles.text2}>Toyota</Text>
-                        <Image style={styles.image1} source={require('../images/threedot.png')} />
+                        <Pressable onPress={() => this.props.navigation.navigate('FilterScreen')}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
                     </View>
                 </View>
                 <View style={styles.header}>
@@ -268,10 +274,12 @@ class Search extends React.Component {
                 <View style={styles.header3}>
                     <View style={styles.checkboxVod}>
                     <CheckBox
-                        disabled={false}
-                        onPress={(value) => { this.setState({ s_voditelem: value }) }}
+                        value={this.state.s_voditelem}
+                        onValueChange={(value) => { this.setState({ s_voditelem: value }) }}
                         tintColors={{true: '#000000'}}
+                        
                         style={styles.checkbox}
+                       
                     />
                     <Text style={styles.text4}>С водителем</Text>
                     </View>
@@ -286,8 +294,8 @@ class Search extends React.Component {
                         style={styles.checkbox}
                     /> */}
                         <CheckBox
-                            disabled={false}
-                            // value={this.state.toggleCheckBox}
+                            
+                            value={this.state.vodila_25}
                             onValueChange={(value) =>
                                 this.setState({
                                     vodila_25: value,
