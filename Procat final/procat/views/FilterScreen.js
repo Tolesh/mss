@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { Button } from 'react-native-elements';
-import { StyleSheet, Text, View, Image, Pressable, TextInput,FlatList,Form,TouchableOpacity,Dimensions,SafeAreaView } from 'react-native';
+import { CheckBox } from 'react-native-elements';
+import { StyleSheet, Text, View, Image, Pressable, TextInput,FlatList,Form,TouchableOpacity,Dimensions,SafeAreaView, ScrollView } from 'react-native';
+import { withGlobalContext } from './GlobalContext';
 
 const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'MarksScreen.php?action=get_marks&lang=1';
@@ -11,8 +12,31 @@ const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 const dimensions = Dimensions.get('window');
 const windowHeight = dimensions.height;
 class Filter extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    state ={
+        // toggle: true,   
+        data: [],
+        values: [],
+    }
+    componentWillMount() {
+        let { data, checked } = this.state;
+        let intialCheck = data.map(x => false);
+        this.setState({ checked: intialCheck })
+    }
 
-    
+    // componentDidMount = async () => {
+    //     const response = await fetch(getListUrl);
+    //     const values_response = await fetch(valuesJsonUrl);
+    //     const data = await response.json();
+    //     const values = await values_response.json();
+
+    //     this.setState({ data });
+    //     this.setState({ values });
+
+    //     this.getUsers();
+    // }
     componentDidMount = async () => {
         const values_response = await fetch(valuesJsonUrl);
         const values = await values_response.json();
@@ -58,25 +82,35 @@ class Filter extends React.Component {
 
     //   };
     // }
-    state ={
-        toggle: true,
-        ides: 0
-    }
-_onPress(id){
-    this.state.ides = id
+   
+// _onPress(id){
+//     this.state.ides = id
 
-   if(this.state.ides == id){
-        const newState = !this.state.toggle;
-    this.setState({toggle:newState})
-   }
+//    if(this.state.ides == id){
+//         const newState = !this.state.toggle;
+//     this.setState({toggle:newState})
+//    }
     
-}
+// }
 
+handleChange = (index) => {
+    let checked = [...this.state.checked];
+    checked[index] = !checked[index];
+    this.setState({ checked });
+}
+toggle = () => {
+    if (this.props.global.isMenuOpen == false) {
+        this.props.global.switchToOpen();
+    } else {
+        this.props.global.switchToClose();
+    }
+}
     render(){
- const {toggle} = this.state;
- const ButtonBG = toggle?"white":"black";
- const textColor = toggle?"black":"white";    
- let { data, search } = this.state;       
+//  const {toggle} = this.state;
+//  const ButtonBG = toggle?"white":"black";
+//  const textColor = toggle?"black":"white";    
+ let { data, search,checked } = this.state;   
+   
         return (
             <View style={styles.container}>
                 <View style={styles.head}>
@@ -88,22 +122,33 @@ _onPress(id){
                     </View>
                 </View>
                 <View style={styles.body}>
-                <SafeAreaView scrollEnabled={true}>
+                <ScrollView>
                     <FlatList 
                         data={this.state.data}
-                        keyExtractor={(item,index) => item.id}
-                        renderItem={({ item }) => (
+                        extraData={this.state}
+                        renderItem={({ item,index }) => (
                             <View style={styles.bb}>
-                            <TouchableOpacity
+                                 <CheckBox
+                                    title={item.value}
+                                    checkedIcon='dot-circle-o'
+                                    uncheckedIcon='circle-o'
+                                    checked={checked[index]}
+                                    textStyle={styles.checkboxText}
+                                    containerStyle={styles.checkbox}
+                                    onPress={() => this.handleChange(index)}
+                                    checkedColor="#32B2FF"
+                                    uncheckedColor="#32B2FF"
+                                />
+                            {/* <TouchableOpacity
                             onPress={()=>this._onPress(item.id)}
                             style={{backgroundColor:ButtonBG}}
                             >
                                 <Text style={{color:textColor,fontSize:14,marginLeft:'7%',marginTop: '1%',marginBottom: '1%'}}>{item.value}</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                             </View>
                             )}
                             />
-                </SafeAreaView>
+                </ScrollView>
                 {/* <View style={styles.bb}>
                 <TouchableOpacity
                 onPress={()=>this._onPress()}
@@ -121,6 +166,7 @@ _onPress(id){
                     <Text style={styles.car_name}>Mersedes</Text>
                     <Text style={styles.car_name}>Hyundai</Text> */}
                 </View>
+                <Pressable onPress={this.toggle}><Text>pops</Text></Pressable>
             </View>
         );
     }
@@ -135,6 +181,7 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
     },
+    
     bb: {
         marginBottom: "3%"
     },
@@ -194,4 +241,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Filter;
+export default withGlobalContext(Filter);

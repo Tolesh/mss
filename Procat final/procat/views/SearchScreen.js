@@ -6,10 +6,12 @@ import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { CheckBox } from 'react-native';
 import SegmentedControlTab from "react-native-segmented-control-tab";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { withGlobalContext } from './GlobalContext';
 const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'KeslerFilter.php?action=get_users&lang=1';
 const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
+// const Context = React.createContext("default");
 
 var radio_props = [
     {label: 'Автомат', value: 0 },
@@ -37,8 +39,8 @@ class Search extends React.Component {
         god_max: '',
         kpp: '',
         mesta: '',
-        s_voditelem: false,
-        vodila_25: false,
+        s_voditelem: '',
+        vodila_25: '',
         calendar_date: '',
     }
 
@@ -266,17 +268,11 @@ class Search extends React.Component {
                 <View style={styles.header3}>
                     <View style={styles.checkboxVod}>
                     <CheckBox
-                            disabled={false}
-                            value={this.state.vodila_25}
-                            onValueChange={(value) =>
-                                this.setState({
-                                    vodila_25: value,
-                                })
-                            }
-                            tintColors={{true: '#000000'}}
-                            style={styles.checkbox}
-                            // onPress={(value) => { this.setState({ vodila_25: value }) }}
-                        />
+                        disabled={false}
+                        onPress={(value) => { this.setState({ s_voditelem: value }) }}
+                        tintColors={{true: '#000000'}}
+                        style={styles.checkbox}
+                    />
                     <Text style={styles.text4}>С водителем</Text>
                     </View>
                 </View>
@@ -291,10 +287,10 @@ class Search extends React.Component {
                     /> */}
                         <CheckBox
                             disabled={false}
-                            value={this.state.s_voditelem}
+                            // value={this.state.toggleCheckBox}
                             onValueChange={(value) =>
                                 this.setState({
-                                    s_voditelem: value,
+                                    vodila_25: value,
                                 })
                             }
                             tintColors={{true: '#000000'}}
@@ -490,4 +486,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Search;
+export default withGlobalContext(Search);
