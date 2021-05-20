@@ -5,6 +5,7 @@ GlobalContext = React.createContext({});
 export class GlobalContextProvider extends React.Component {
     state = {
         selected: [],
+        selected_ids: [],
         // isMenuOpen: false
     }
 

@@ -20,6 +20,7 @@ class Filter extends React.Component {
         data: [],
         values: [],
         selected_mark_titles: [],
+        selected_mark_ids: [],
     }
     componentWillMount() {
         let { data, checked } = this.state;
@@ -94,22 +95,32 @@ class Filter extends React.Component {
     
 // }
 
-handleChange = (value, index) => {
+handleChange = (value, id, index) => {
     let checked = [...this.state.checked];
     checked[index] = !checked[index];
     this.setState({ checked });
     this.state.selected_mark_titles.push(value);
+    this.state.selected_mark_ids.push(id);
 }
 
 toggle = () => {
     let newArray = [];
+    let newIdsArray = [];
+
     this.state.selected_mark_titles.forEach(element => {
         if (!newArray.some(o => o[0] === element[0])) {
             newArray.push(element)
         }
     });
+
+    this.state.selected_mark_ids.forEach(element => {
+        if (!newIdsArray.some(o => o[0] === element[0])) {
+            newIdsArray.push(element)
+        }
+    });
     
     this.props.global.selected = newArray;
+    this.props.global.selected_ids = newIdsArray;
     this.props.navigation.navigate('SearchScreen');
 }
     render(){
@@ -142,7 +153,7 @@ toggle = () => {
                                     checked={checked[index]}
                                     textStyle={styles.checkboxText}
                                     containerStyle={styles.checkbox}
-                                    onPress={() => this.handleChange(item.value, index)}
+                                    onPress={() => this.handleChange(item.value, item.id, index)}
                                     checkedColor="#000"
                                     uncheckedColor="#000"
                                 />
