@@ -46,7 +46,6 @@ class Filter extends React.Component {
 
         this.getUsers();
     }
-
     getUsers = () => {
         var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         const request = new Request(getUsersUrl, { method: 'POST', body: json });
@@ -85,7 +84,7 @@ class Filter extends React.Component {
     //   };
     // }
    
-// _onPress(id){ 
+// _onPress(id){
 //     this.state.ides = id
 
 //    if(this.state.ides == id){
@@ -95,24 +94,24 @@ class Filter extends React.Component {
     
 // }
 
-    handleChange = (value, index) => {
-        let checked = [...this.state.checked];
-        checked[index] = !checked[index];
-        this.setState({ checked });
-        this.state.selected_mark_titles.push(value);
-    }
+handleChange = (value, index) => {
+    let checked = [...this.state.checked];
+    checked[index] = !checked[index];
+    this.setState({ checked });
+    this.state.selected_mark_titles.push(value);
+}
 
-    toggle = () => {
-        const newArray = [];
-        this.state.selected_mark_titles.forEach(element => {
-            if (!newArray.some(o => o[0] === element[0])) {
-                newArray.push(element)
-            }
-        });
-        
-        this.props.global.selected = newArray;
-        this.props.navigation.navigate('SearchScreen');
-    }
+toggle = () => {
+    let newArray = [];
+    this.state.selected_mark_titles.forEach(element => {
+        if (!newArray.some(o => o[0] === element[0])) {
+            newArray.push(element)
+        }
+    });
+    
+    this.props.global.selected = newArray;
+    this.props.navigation.navigate('SearchScreen');
+}
     render(){
 //  const {toggle} = this.state;
 //  const ButtonBG = toggle?"white":"black";

@@ -1,7 +1,7 @@
 import React, { useContext,} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity, ScrollView,TouchableWithoutFeedback } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { CheckBox } from 'react-native';
@@ -35,7 +35,7 @@ class Search extends React.Component {
         region: '',
         price_min: '',
         price_max: '',
-        marka: '',
+        marka: [],
         god_min: '',
         god_max: '',
         kpp: '',
@@ -47,7 +47,11 @@ class Search extends React.Component {
         selectedMarks: ''
     }
     componentDidMount = async () => {
-        
+        const values_response = await fetch(valuesJsonUrl);
+        const values = await values_response.json();
+
+        this.setState({ values });
+        this.Search();
     }
     // onChangeCheck() {
     //     this.setState({ checked: !this.state.checked})
@@ -113,7 +117,7 @@ class Search extends React.Component {
         this.setState({region: index });
     };
 
-    getParsedDate(strDate) { 
+    getParsedDate(strDate) {
         var strSplitDate = String(strDate).split(' ');
         var date = new Date(strSplitDate[0]);
 
@@ -133,47 +137,44 @@ class Search extends React.Component {
         return date.toString();
     }
 
-    showMore = () => {
-        this.props.global.selected = [];
-        this.props.navigation.navigate('FilterScreen');
-    }
-
     Search = () => {
         var json = '{"region": "' + this.state.region + '", "price_min": "' + this.state.price_min + '", "price_max": "' + this.state.price_max + '", "marka": "' + this.state.marka + '", "god_min": "' + this.state.god_min + '", "god_max": "' + this.state.god_max + '", "kpp": "' + this.state.kpp + '", "mesta": "' + this.state.mesta + '", "s_vodiloy": "' + this.state.s_voditelem + '", "voditel 25+": "' + this.state.vodila_25 + '", "calendar": "' + this.state.calendar_date + '",}';
-        // const request = new Request(authUrl, { method: 'POST', body: json });
-        // console.log(json);
+        const request = new Request(getUsersUrl, { method: 'POST', body: json });
+        console.log(json);
        
-        // fetch(request)
-        //     .then(response => {
-        //         if (response.status === 200) {
-        //             return response.json();
-        //         } else {
-        //             throw new Error('Something went wrong on api server!');
-        //         }
-        //     })
-        //     .then(response => { 
-        //         if (response == 1 || response == 2 || response == "") {
-        //             if (response == 1) {
-        //                 this.setState({ isMessage1Display: true });
-        //                 this.setState({ isMessage2Display: false });
-        //             }
+        fetch(request)
+            .then(response => {
+                this.setState({ data: response });
+                this.arrayholder = response;
+            //     if (response.status === 200) {
+            //         return response.json();
+            //     } else {
+            //         throw new Error('Something went wrong on api server!');
+            //     }
+            // })
+            // .then(response => { 
+            //     if (response == 1 || response == 2 || response == "") {
+            //         if (response == 1) {
+            //             this.setState({ isMessage1Display: true });
+            //             this.setState({ isMessage2Display: false });
+            //         }
     
-        //             if (response == 2) {
-        //                 this.setState({ isMessage1Display: false });
-        //                 this.setState({ isMessage2Display: true });
-        //             }
-        //         } else {
-        //             AsyncStorage.multiSet([
-        //                 ["id", response.id],
-        //                 ["phone", response.email],
-        //                 ["password", response.password],
-        //             ])
+            //         if (response == 2) {
+            //             this.setState({ isMessage1Display: false });
+            //             this.setState({ isMessage2Display: true });
+            //         }
+            //     } else {
+            //         AsyncStorage.multiSet([
+            //             ["id", response.id],
+            //             ["phone", response.email],
+            //             ["password", response.password],
+            //         ])
     
-        //             this.props.navigation.navigate('TovarScreen');
-        //         }
-        //     }).catch(error => {
-        //         console.error(error);
-        //     }); 
+            //         this.props.navigation.navigate('ResultScreen');
+            //     }
+            }).catch(error => {
+                console.error(error);
+            }); 
         }
         
     render(){
@@ -230,10 +231,11 @@ class Search extends React.Component {
                     <View style={styles.marka}>
                         {
                             this.props.global.selected.map((item, key) => (
-                                <Text style={styles.text2}>{item}</Text> 
+                               <Text style={styles.text2} onPress={() => this.handleMarka(item)}>{item}</Text>
                             ))
                         }
-                        <Pressable onPress={this.showMore}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
+                    
+                        <Pressable onPress={() => this.props.navigation.navigate('FilterScreen')}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
                     </View>
                 </View>
                 <View style={styles.header}>
