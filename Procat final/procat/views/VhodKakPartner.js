@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const GLOBAL = require('../views/Globals');
 const authUrl = GLOBAL.BASE_URL + 'SaveProfile.php?action=Save&lang=1';
 const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
+const getInfoUrl = GLOBAL.BASE_URL + 'SaveProfile.php?action=get_info&lang=1';
 
 class VKP extends React.Component {
 
@@ -42,6 +43,54 @@ class VKP extends React.Component {
         const values = await values_response.json();
 
         this.setState({ values });
+
+        AsyncStorage.multiGet(['id', 'phone', 'password', 'type']).then((data) => {
+          // let id = data[0][1];
+          let id = 43;
+
+          this.setState({ id: id });
+
+          if (id > 0) {
+              var json = '{"id": "' + this.state.id + '"}';
+              const request = new Request(getInfoUrl, { method: 'POST', body: json });
+
+              fetch(request)
+                    .then(response => {
+                        if (response.status === 200) {
+                            return response.json();
+                        } else {
+                            throw new Error('Something went wrong on api server!');
+                        }
+                    })
+                    .then(response => {
+                      // console.log(response);
+                        this.setState({ name: response.name });
+                        this.setState({ surname: response.surname });
+                        this.setState({ otchestvo: response.patronymic });
+                        this.setState({ day: response.day });
+                        this.setState({ month: response.month });
+                        this.setState({ year: response.year });
+                        this.setState({ iin1: response.IIN_1 });
+                        this.setState({ iin2: response.IIN_2 });
+                        this.setState({ iin3: response.IIN_3 });
+                        this.setState({ iin4: response.IIN_4 });
+                        this.setState({ prava1: response.prava_1 });
+                        this.setState({ prava2: response.prava_2 });
+
+                        // if (response.avatar != "") {
+                        //     let avatar_url = GLOBAL.SITE_URL + 'avatars/' + response.avatar;
+
+                        //     this.setState({ avatar: avatar_url });
+                        // } else {
+                        //     let avatar_url = GLOBAL.SITE_URL + 'images/avatar.png';
+
+                        //     this.setState({ avatar: avatar_url });
+                        // }
+                    }).catch(error => {
+                        console.error(error);
+                    });
+          }
+        });
     } catch (e) {
         throw e
     }
@@ -137,8 +186,6 @@ class VKP extends React.Component {
           //       ["phone", response.email],
           //       ["password", response.password],
           //   ])
-
-          //   this.props.navigation.navigate('TovarScreen');
           // }
           }).catch(error => {
             console.error(error);
@@ -150,9 +197,9 @@ class VKP extends React.Component {
 
         return (
             <View style={styles.container}>
-                  <Text style={isMessage1Display ? styles.notice : styles.hide}>Профиль успешно сохранён</Text>
+                  {/* <Text style={isMessage1Display ? styles.notice : styles.hide}>Профиль успешно сохранён</Text>
                   <Text style={isMessage2Display ? styles.notice : styles.hide}>Не все поля заполнены</Text>
-                  <Text style={isMessage3Display ? styles.notice : styles.hide}>Профиль успешно обновлён</Text>
+                  <Text style={isMessage3Display ? styles.notice : styles.hide}>Профиль успешно обновлён</Text> */}
                 <View style={styles.pred_content}>
                     <View style={styles.content}>
                         <View style={styles.img_car}>
@@ -161,12 +208,15 @@ class VKP extends React.Component {
                         <View style={styles.info}>
                           <TextInput placeholder="Имя" style={styles.textInput} 
                             onChangeText={this.handleName}
+                            value = {this.state.name}
                           />
                           <TextInput placeholder="Фамилия" style={styles.textInput} 
                             onChangeText={this.handleSurname}
+                            value = {this.state.surname}
                           />
                           <TextInput placeholder="Отчество" style={styles.textInput} 
                             onChangeText={this.handleOtchestvo}
+                            value = {this.state.otchestvo}
                           />
                         </View>
                     </View>
@@ -175,16 +225,19 @@ class VKP extends React.Component {
                         maxLength={2}
                         keyboardType="number-pad"
                         onChangeText={this.handleDay}
+                        value = {this.state.day}
                       />
                       <TextInput placeholder="ММ" style={styles.textInput2} 
                         maxLength={2}
                         keyboardType="number-pad"
                         onChangeText={this.handleMonth}
+                        value = {this.state.month}
                       />
                       <TextInput placeholder="ГГГГ" style={styles.textInput3} 
                         maxLength={4}
                         keyboardType="number-pad"
                         onChangeText={this.handleYear}
+                        value = {this.state.year}
                       />
                     </View>
                     <View style={styles.header2}>
@@ -196,21 +249,25 @@ class VKP extends React.Component {
                           maxLength={3}
                           keyboardType="number-pad"
                           onChangeText={this.handleIIN1}
+                          value = {this.state.iin1}
                         />
                         <TextInput  style={styles.textInput4} 
                           maxLength={3}
                           keyboardType="number-pad"
                           onChangeText={this.handleIIN2}
+                          value = {this.state.iin2}
                         />
                         <TextInput  style={styles.textInput4} 
                           maxLength={3}
                           keyboardType="number-pad"
                           onChangeText={this.handleIIN3}
+                          value = {this.state.iin3}
                         />
                         <TextInput  style={styles.textInput4} 
                           maxLength={3}
                           keyboardType="number-pad"
                           onChangeText={this.handleIIN4}
+                          value = {this.state.iin4}
                         />
                       </View>
                     </View>
@@ -223,11 +280,13 @@ class VKP extends React.Component {
                           maxLength={2}
                           autoCapitalize="characters"
                           onChangeText={this.handlePrava1}
+                          value = {this.state.prava1}
                         />
                         <TextInput  style={styles.textInput5} 
                            maxLength={4}
                            keyboardType="number-pad"
                            onChangeText={this.handlePrava2}
+                           value = {this.state.prava2}
                         />
                       </View>
                     </View>
