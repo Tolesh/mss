@@ -1,68 +1,33 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState } from "react";
-import { StyleSheet, Text, View, Button, TextInput, Switch, TouchableOpacity } from 'react-native';
-
-const GLOBAL = require('../views/Globals');
-// const authUrl = GLOBAL.BASE_URL + 'RebutPassword.php?action=recoverpwd&lang=1';
-const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
+import { StyleSheet, Text, View, Button, TextInput, Switch } from 'react-native';
 
 class Rebut extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
-  state = {
-    data: [],
-    values: [],
-    phone: '',
-  }
-
-  handlePhone = (text) => {
-    this.setState({ phone: text })
-  }
-
-  Touch = () => {
-      GLOBAL.SERVER_RESULT = this.state.phone;
-
-      this.props.navigation.navigate('RebutPassScreen_2');
-  }
-
-  componentDidMount = async () => {
-    try {
-        const values_response = await fetch(valuesJsonUrl);
-        const values = await values_response.json();
-
-        this.setState({ values });
-    } catch (e) {
-        throw e
-    }
-  }
-
     render() {
-
+      // const [isSelected, setSelection] = useState(false);
       return (
         <View style={styles.container}>
           <View style={styles._input}>
             <TextInput style={styles.input}
-              placeholder={this.state.values.MSG_REBUT_SCREEN1_NOMER}
+              placeholder="Номер телефона"
               placeholderTextColor="#000000"
               returnKeyType='go'
               keyboardType="number-pad"
               maxLength={11}
               autoCorrect={false} 
-              onChangeText={this.handlePhone}
               />
           </View>
           <View>
-              <Text style={styles.text}>{this.state.values.MSG_REBUT_SCREEN1_TEXT}</Text>
+              <Text style={styles.text}>Мы отправим Код подтверждения для восстановления пароля</Text>
           </View>
         <View style={styles.buttons}>
           <View style={styles.btn1}>
-            <TouchableOpacity onPress={this.Touch} style={styles.button}>
-                <Text style={styles.text_button}>{this.state.values.MSG_REBUT_SCREEN1_NEXT_PAGE}</Text>
-            </TouchableOpacity>
+            <Button
+              title="Далее"
+              color="#000"
+              /> 
           </View>
         </View>
       </View>
@@ -76,19 +41,6 @@ class Rebut extends React.Component {
       backgroundColor: 'white',
       justifyContent: 'center',
       // alignItems: 'center',
-    },
-    button: {
-    alignItems: "center",
-    backgroundColor: "#000000",
-    padding: 10,
-    },
-    button: {
-      alignItems: "center",
-      backgroundColor: "#000000",
-      padding: 10,
-    },
-    text_button: {
-      color: "white",
     },
     input: {
       height: 52,
