@@ -1,14 +1,23 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { View, KeyboardAvoidingView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, Button, Keyboard,Image}  from 'react-native';
+import { View, KeyboardAvoidingView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, Button, Keyboard,Image,Pressable}  from 'react-native';
 import { CheckBox } from 'react-native';
 import CodeInput from 'react-native-code-input';
 import ModalDropdown from 'react-native-modal-dropdown';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+
+
+const GLOBAL = require('../views/Globals');
+const getUsersUrl = GLOBAL.BASE_URL + 'AddObyavlenie.php?action=get_colors&lang=1';
+const getUsersUrl2 = GLOBAL.BASE_URL + 'AddObyavlenie.php?action=get_years&lang=1';
+const getUsersUrl3 = GLOBAL.BASE_URL + 'AddObyavlenie.php?action=get_privods&lang=1';
+const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 const DEMO_OPTIONS_1 = ['2011','2012','2013','2014','2015', '2016', '2017','2018' , '2019', '2020','2021'];
 const DEMO_OPTIONS_2 = ['белый','черный','розовый','красный','синий', 'голубой', 'серый'];
 const DEMO_OPTIONS_3 = ['Полный','Задний','Передний','Гибридный синергетический'];
+
+
 const DEMO_OPTIONS_4 = ['4','2'];
 var radio_props = [
     {label: 'Автомат', value: 0 },
@@ -28,9 +37,46 @@ class AddOb extends React.Component {
             toggleCheckBox5: false,
             toggleCheckBox6: false,
             toggleCheckBox7: false,
+            colors: []
             // selectedIndex: 0
         };
     }
+    // componentWillMount() {
+    //     let { data, checked } = this.state;
+    //     let intialCheck = data.map(x => false);
+    //     this.setState({ checked: intialCheck })
+    // }
+    componentDidMount = async () => {
+        const values_response = await fetch(valuesJsonUrl);
+        const values = await values_response.json();
+
+        this.setState({ values });
+
+
+        this.getColors();
+    }
+    getColors = () => {
+        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
+        const request = new Request(getUsersUrl, { method: 'POST', body: json });
+        // console.log(json);
+        fetch(request)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                this.setState({ colors: response });
+                console.log(response)
+                // this.arrayholder = response;
+                // this.state.colors = response;
+            }).catch(error => {
+                console.error(error);
+            });
+    }
+
     renderElement () {
    
         if(this.state.toggleCheckBox3 == true){
@@ -51,9 +97,11 @@ class AddOb extends React.Component {
         return null
     }
     
+    
    
     render(){
-        
+    
+        let { data, search,checked} = this.state; 
         return (
             <View style={styles.container}>
                <View style={styles.pred_content}>
@@ -86,10 +134,11 @@ class AddOb extends React.Component {
                 <View style={styles.pred_content2}>
                     <View style={styles.content4}>
                         <Text style={styles.price_text3}>Год выпуска</Text>
-                        <View style={styles.price_text4}>
-                            <ModalDropdown defaultValue={'2015'}  options={DEMO_OPTIONS_1} textStyle={styles.price_textText} dropdownStyle={styles.dropdownStyle4}/>
+                        <Pressable style={styles.price_text4}>
+                      
+                    <ModalDropdown defaultValue={'2015'}  options={this.state.colors} textStyle={styles.price_textText} dropdownStyle={styles.dropdownStyle4}/>
                             <Image  style={styles.img_polygon} source={require('../images/polygon.png')} />
-                        </View>
+                        </Pressable>
                     </View>
                     <View style={styles.content5}>
                     <Text style={styles.price_text3}>Цвет</Text>

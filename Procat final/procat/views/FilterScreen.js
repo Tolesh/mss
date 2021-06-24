@@ -11,6 +11,7 @@ const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 
 const dimensions = Dimensions.get('window');
 const windowHeight = dimensions.height;
+
 class Filter extends React.Component {
     constructor(props) {
         super(props);
@@ -22,6 +23,7 @@ class Filter extends React.Component {
         selected_mark_titles: [],
         selected_mark_ids: [],
     }
+   
     componentWillMount() {
         let { data, checked } = this.state;
         let intialCheck = data.map(x => false);
@@ -50,7 +52,7 @@ class Filter extends React.Component {
     getUsers = () => {
         var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        // console.log(json);
+        // console.log(request);
         fetch(request)
             .then(response => {
                 if (response.status === 200) {
@@ -60,6 +62,7 @@ class Filter extends React.Component {
                 }
             })
             .then(response => {
+                // console.log(response);
                 this.setState({ data: response });
                 this.arrayholder = response;
             }).catch(error => {
@@ -116,6 +119,7 @@ toggle = () => {
     this.state.selected_mark_ids.forEach(element => {
         if (!newIdsArray.some(o => o[0] === element[0])) {
             newIdsArray.push(element)
+            // console.log(newIdsArray);
         }
     });
     
@@ -138,10 +142,16 @@ toggle = () => {
                     <View style={styles.test2}>
                         <Text style={styles.text}>Марка</Text>
                     </View>
+                    <View style={styles.test3}>
+                    <TouchableOpacity onPress={this.toggle}><Text style={styles.text2}>Выбрать</Text></TouchableOpacity>
+                    </View>
                 </View>
                 <View style={styles.body}>
-                <ScrollView>
+                    <SafeAreaView style={styles.SafeAreaView}>
+                {/* <ScrollView bounces={true}> */}
                     <FlatList 
+                    removeClippedSubviews={true}
+                    maxToRenderPerBatch={3}
                         data={this.state.data}
                         extraData={this.state}
                         renderItem={({ item, index }) => (
@@ -166,7 +176,10 @@ toggle = () => {
                             </View>
                             )}
                             />
-                </ScrollView>
+                            
+                {/* </ScrollView> */}
+                </SafeAreaView>
+                
                 {/* <View style={styles.bb}>
                 <TouchableOpacity
                 onPress={()=>this._onPress()}
@@ -184,7 +197,7 @@ toggle = () => {
                     <Text style={styles.car_name}>Mersedes</Text>
                     <Text style={styles.car_name}>Hyundai</Text> */}
                 </View>
-                <TouchableOpacity onPress={this.toggle}><Text>pops</Text></TouchableOpacity>
+                
             </View>
         );
     }
@@ -199,7 +212,10 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
     },
-    
+    SafeAreaView : {
+        // flex: 1,
+        // marginTop: windowHeight + StatusBar.currentHeight
+    },
     bb: {
         marginBottom: "3%"
     },
@@ -240,6 +256,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         
     },
+    text2: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        
+    },
     car_name: {
         fontSize: 14,
         marginBottom: 15,
@@ -248,11 +269,18 @@ const styles = StyleSheet.create({
     },
     test: {
         justifyContent: 'center',
-        width: '35%',
+        width: '39%',
+        // backgroundColor: 'red'
     },
     test2: {
         justifyContent: 'center',
-        width: '50%',
+        width: '40%',
+        // backgroundColor: 'yellow'
+    },
+    test3: {
+        justifyContent: 'center',
+        width: '16%',
+        // backgroundColor: 'green'
     },
     strelka: {
         

@@ -9,7 +9,7 @@ import SegmentedControlTab from "react-native-segmented-control-tab";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { withGlobalContext } from './GlobalContext';
 const GLOBAL = require('../views/Globals');
-const getUsersUrl = GLOBAL.BASE_URL + 'KeslerFilter.php?action=get_users&lang=1';
+const getUsersUrl = GLOBAL.BASE_URL + 'ResultScreen.php?action=search&lang=1';
 const getMarksUrl = GLOBAL.BASE_URL + 'MarksScreen.php?action=get_marks&lang=1';
 const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 
@@ -30,12 +30,13 @@ class Search extends React.Component {
     state = {
         data: [],
         marksArr: [],
+        // marksArr2: [1,2,3],
         values: [],
         search: '',
         region: '',
         price_min: '',
         price_max: '',
-        marka: [],
+        // marka : [],
         god_min: '',
         god_max: '',
         kpp: '',
@@ -51,7 +52,10 @@ class Search extends React.Component {
         const values = await values_response.json();
 
         this.setState({ values });
-        this.Search();
+        // this.state.marksArr = this.state.marksArr.map(Number);
+        // console.log(this.state.marksArr);
+        // console.log(this.state.marksArr2);
+        this.setState({ marksArr: this.props.global.selected_ids });
     }
     // onChangeCheck() {
     //     this.setState({ checked: !this.state.checked})
@@ -85,9 +89,11 @@ class Search extends React.Component {
         this.setState({ price_max: text })
     }
 
-    handleMarka = (text) => {
-        this.setState({ marka: text })
-    }
+    // handleMarka = (text) => {
+    //     this.setState({ marksArr: this.props.global.selected_ids })
+    // }
+
+    
 
     handleGod_min = (text) => {
         this.setState({ god_min: text })
@@ -107,6 +113,7 @@ class Search extends React.Component {
 
     handleS_voditelem = (text) => {
         this.setState({ s_voditelem: text })
+        // this.setState({ marksArr: this.props.global.selected_ids })
     }
 
     handleVoditel_25 = (text) => {
@@ -116,7 +123,8 @@ class Search extends React.Component {
     handleRegion = index => {
         this.setState({region: index });
     };
-
+  
+    
     getParsedDate(strDate) {
         var strSplitDate = String(strDate).split(' ');
         var date = new Date(strSplitDate[0]);
@@ -136,16 +144,22 @@ class Search extends React.Component {
         date = dd + " " + mm + " " + yyyy;
         return date.toString();
     }
-
+    
     Search = () => {
-        var json = '{"region": "' + this.state.region + '", "price_min": "' + this.state.price_min + '", "price_max": "' + this.state.price_max + '", "marka": "' + this.state.marka + '", "god_min": "' + this.state.god_min + '", "god_max": "' + this.state.god_max + '", "kpp": "' + this.state.kpp + '", "mesta": "' + this.state.mesta + '", "s_vodiloy": "' + this.state.s_voditelem + '", "voditel 25+": "' + this.state.vodila_25 + '", "calendar": "' + this.state.calendar_date + '",}';
-        const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        console.log(json);
+        var json = '{"region": "' + this.state.region + '", "price_min": "' + this.state.price_min + '", "price_max": "' + this.state.price_max + '", "marka": "' + this.state.marksArr + '", "god_min": "' + this.state.god_min + '", "god_max": "' + this.state.god_max + '", "kpp": "' + this.state.kpp + '", "mesta": "' + this.state.mesta + '", "s_vodiloy": "' + this.state.s_voditelem + '", "voditel 25+": "' + this.state.vodila_25 + '", "calendar": "' + this.state.calendar_date + '"}';
+        // const request = new Request(getUsersUrl, { method: 'POST', body: json });
+        // console.log(json);
+        GLOBAL.SERVER_RESULT=json;
+        this.props.navigation.navigate('ResultScreen')
+        // const request = new Request(getUsersUrl, { method: 'POST', body: json });
        
-        fetch(request)
-            .then(response => {
-                this.setState({ data: response });
-                this.arrayholder = response;
+        //         console.log(request);
+
+       
+        // fetch(request)
+        //     .then(response => {
+        //         this.setState({ data: response });
+        //         this.arrayholder = response;
             //     if (response.status === 200) {
             //         return response.json();
             //     } else {
@@ -170,13 +184,12 @@ class Search extends React.Component {
             //             ["password", response.password],
             //         ])
     
-            //         this.props.navigation.navigate('ResultScreen');
             //     }
-            }).catch(error => {
-                console.error(error);
-            }); 
-        }
-        
+        //     }).catch(error => {
+        //         console.error(error);
+        //     }); 
+        // }
+    }
     render(){
 // console.log({this.props.global.selected})
       
@@ -230,11 +243,15 @@ class Search extends React.Component {
                     </View>
                     <View style={styles.marka}>
                         {
-                            this.props.global.selected.map((item, key) => (
-                               <Text style={styles.text2} onPress={() => this.handleMarka(item)}>{item}</Text>
+                            this.props.global.selected.map((item,index) => (
+                               <Text onChangeText={this.handleMarka} style={styles.text2} key={index}>{item}</Text>
                             ))
                         }
-                    
+                        {/* {
+                           this.props.global.selected_ids.map((item, key) => (
+                            <Text onPress={() => this.handleMarka(item)}></Text>
+                         )) 
+                        } */}
                         <Pressable onPress={() => this.props.navigation.navigate('FilterScreen')}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
                     </View>
                 </View>
@@ -355,8 +372,7 @@ class Search extends React.Component {
                         <Button
                             onPress={this.Search}
                             title="Найти машину"
-                            color="#000" 
-                        /> 
+                            color="#000" /> 
                     </View>
                 </View>
             </View>
