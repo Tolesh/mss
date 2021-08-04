@@ -73,12 +73,12 @@ class Login extends React.Component {
                     ["password", response.password],
                 ])
 
-                this.props.navigation.navigate('TovarScreen');
+                this.props.navigation.navigate('HistoryScreen');
             }
         }).catch(error => {
             console.error(error);
         }); 
-    }
+  }
 
     render() {
       // const [isSelected, setSelection] = useState(false);
@@ -122,21 +122,25 @@ class Login extends React.Component {
                 style={styles.checkbox}
                 onPress={() => this.setAgree()}
             />
-          <Text style={styles.label}>Remember me</Text>
+          <Text style={styles.label}>{this.state.values.MSG_REMEMBER_ME}</Text>
         </View>
         <View style={styles.buttons}>
           <View style={styles.btn1}>
             <TouchableOpacity style={styles.button} onPress={this.login}>
-              <Text style={styles.text_button}>Войти</Text>
+              <Text style={styles.text_button}>{this.state.values.MSG_MAIN_LOGIN}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.btn2}>
             <TouchableOpacity onPress={() => this.props.navigation.navigate('RegScreen')} style={styles.button} >
-                <Text style={styles.text_button}>Регистраиця</Text>
+                <Text style={styles.text_button}>{this.state.values.MSG_MAIN_REG}</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <StatusBar style="auto" />
+        <View style={styles.btn3}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('RebutPassScreen')} style={styles.button} >
+                <Text style={styles.text_button}>{this.state.values.MSG_MAIN_REBUT_PASS}</Text>
+            </TouchableOpacity>
+        </View>
       </View>
       );
     }
@@ -164,6 +168,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000000",
     padding: 10,
+    marginBottom: 5,
   },
   text_button: {
     color: "white",
@@ -180,6 +185,13 @@ const styles = StyleSheet.create({
   },
   btn2: {
     
+  },
+  btn3: {
+    marginLeft: 36, 
+    marginRight: 36,
+    // flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    // alignItems: 'center', 
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -201,10 +213,10 @@ const styles = StyleSheet.create({
     left: '10%',
     color: '#ff0000',
     width: '80%',
-},
-hide: {
+  },
+  hide: {
     display: 'none'
-},
+  },
 });
 
 export default Login;

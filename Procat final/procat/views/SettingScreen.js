@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
 import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
 import { CheckBox } from 'react-native';
 
@@ -29,7 +29,9 @@ class Settings extends React.Component {
             <View style={styles.container}>
                 <View style={styles.head}>
                     <View style={styles.test}>
-                        <Image style={styles.strelka} source={require('../images/strelka.png')} />
+                        <TouchableOpacity  onPress={() => this.props.navigation.navigate('MenuScreen')}>
+                            <Image style={styles.strelka} source={require('../images/strelka.png')} />
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.test2}>
                         <Text style={styles.text}>Настройки</Text>

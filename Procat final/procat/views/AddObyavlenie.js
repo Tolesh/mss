@@ -6,13 +6,21 @@ import { CheckBox } from 'react-native';
 import CodeInput from 'react-native-code-input';
 import ModalDropdown from 'react-native-modal-dropdown';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import { Avatar } from 'react-native-elements';
+import ImagePicker from 'react-native-image-crop-picker';
+// import ModalSelector from 'react-native-modal-selector';
+// import ModalPicker from 'react-native-modal-picker'
+// import ModalFilterPicker from 'react-native-modal-filter-picker';
+
 
 
 const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'AddObyavlenie.php?action=get_colors&lang=1';
 const getUsersUrl2 = GLOBAL.BASE_URL + 'AddObyavlenie.php?action=get_years&lang=1';
 const getUsersUrl3 = GLOBAL.BASE_URL + 'AddObyavlenie.php?action=get_privods&lang=1';
+const getUsersUrl4 = GLOBAL.BASE_URL + 'add_car.php?action=get_info&lang=1';
 const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
+const uploadAvatarUrl = GLOBAL.BASE_URL + 'photoKesler.php?action=upload_avatar&lang=1'; 
 const DEMO_OPTIONS_1 = ['2011','2012','2013','2014','2015', '2016', '2017','2018' , '2019', '2020','2021'];
 const DEMO_OPTIONS_2 = ['белый','черный','розовый','красный','синий', 'голубой', 'серый'];
 const DEMO_OPTIONS_3 = ['Полный','Задний','Передний','Гибридный синергетический'];
@@ -37,7 +45,15 @@ class AddOb extends React.Component {
             toggleCheckBox5: false,
             toggleCheckBox6: false,
             toggleCheckBox7: false,
-            colors: []
+            colors: [],
+            data: [],
+            search: [],
+            marka: [],
+            year: [],
+            checked: [],
+            avatar: 'https://kesler.capsula.kz/images/111.png',
+            textInputValue: 'tt',
+            showModal: true
             // selectedIndex: 0
         };
     }
@@ -54,11 +70,13 @@ class AddOb extends React.Component {
 
 
         this.getColors();
+        this.getMarka();
+        
     }
     getColors = () => {
         var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        // console.log(json);
+        // console.log(getUsersUrl);
         fetch(request)
             .then(response => {
                 if (response.status === 200) {
@@ -68,13 +86,69 @@ class AddOb extends React.Component {
                 }
             })
             .then(response => {
-                this.setState({ colors: response });
-                console.log(response)
+                
+                this.setState({ year: response });
+
                 // this.arrayholder = response;
-                // this.state.colors = response;
+                // this.state.colors = this.state.data;
+                // console.log(this.state.data);
             }).catch(error => {
                 console.error(error);
             });
+    }
+    getMarka = () => {
+        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
+        const request = new Request(getUsersUrl4, { method: 'POST', body: json });
+        // console.log(getUsersUrl);
+        fetch(request)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                
+                this.setState({ marka: response });
+
+                // this.arrayholder = response;
+                // this.state.colors = this.state.data;
+                // console.log(this.state.data);
+            }).catch(error => {
+                console.error(error);
+            });
+    }
+
+    handleAvatar = () => {
+        ImagePicker.openPicker({
+            width: 200,
+            height: 200,
+            cropping: true,
+            includeBase64: true,
+            includeExif: true,
+        }).then(image => {
+            let image_base64 = 'data:'+ image.mime +';base64,'+ image.data;
+
+            var json = '{"id": "' + this.state.id + '", "image": "' + image_base64 + '"}';
+            const request = new Request(uploadAvatarUrl, { method: 'POST', body: json });
+
+            fetch(request)
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        throw new Error('Something went wrong on api server!');
+                    }
+                })
+                .then(response => {
+                    let avatar_url = GLOBAL.SITE_URL + 'avatars/'+ response;
+
+                    this.setState({ avatar: avatar_url });
+                }).catch(error => {
+                    console.error(error);
+                });
+        }).catch(e => console.log(e));
     }
 
     renderElement () {
@@ -101,7 +175,8 @@ class AddOb extends React.Component {
    
     render(){
     
-        let { data, search,checked} = this.state; 
+        let { marka, year, search,checked} = this.state;
+        
         return (
             <View style={styles.container}>
                <View style={styles.pred_content}>
@@ -118,6 +193,17 @@ class AddOb extends React.Component {
                             <Image  style={styles.img_car} source={require('../images/plus.png')} />
                             <Text style={styles.price_text}>Добавить фото</Text>
                         </TouchableOpacity>
+                        <View style={styles.avatarCont}>
+                                <Avatar 
+                                    rounded 
+                                    size="xlarge"
+                                    source={{
+                                        uri: this.state.avatar,
+                                    }}
+                                    containerStyle={styles.avatar}
+                                    onPress={this.handleAvatar}
+                                />
+                        </View>
                         </View>
                     </View>
                 </View>
@@ -127,8 +213,16 @@ class AddOb extends React.Component {
                         <Text style={styles.price_text2}>Модель</Text>
                     </View>
                     <View style={styles.content3}>
-                        <Text style={styles.price_text6}>Huyndai</Text>
-                        <Text style={styles.price_text6}>Accent</Text>
+                    <Pressable style={styles.price_text6}>
+                      
+                      <ModalDropdown defaultValue={'Hunday'}  options={this.state.marka.map(tit => tit.value)} textStyle={styles.price_textText} dropdownStyle={styles.dropdownStyle4}/>
+                             <Image  style={styles.img_polygon} source={require('../images/polygon.png')} />
+                         </Pressable>
+                        <Pressable style={styles.price_text6}>
+                      
+                      <ModalDropdown defaultValue={'Accent'}  options={this.state.marka.map(tit => tit.value)} textStyle={styles.price_textText} dropdownStyle={styles.dropdownStyle4}/>
+                             <Image  style={styles.img_polygon} source={require('../images/polygon.png')} />
+                         </Pressable>
                     </View>
                 </View>
                 <View style={styles.pred_content2}>
@@ -136,10 +230,29 @@ class AddOb extends React.Component {
                         <Text style={styles.price_text3}>Год выпуска</Text>
                         <Pressable style={styles.price_text4}>
                       
-                    <ModalDropdown defaultValue={'2015'}  options={this.state.colors} textStyle={styles.price_textText} dropdownStyle={styles.dropdownStyle4}/>
+                     <ModalDropdown defaultValue={'2015'}  options={this.state.year.map(tit => tit.value)} textStyle={styles.price_textText} dropdownStyle={styles.dropdownStyle4}/>
                             <Image  style={styles.img_polygon} source={require('../images/polygon.png')} />
                         </Pressable>
-                    </View>
+                     </View>
+                    {/* <ModalSelector
+                    data={this.state.data}
+                    // initValue={this.state.textInputValue}
+                    keyExtractor= {item => item.id}
+                    labelExtractor= {item => item.value}
+                    // animationType="none" 
+                    onChange={item => {
+                        this.setState({ textInputValue: item. });
+                      }}/> */}
+ {/* <ModalSelector
+                    data={this.state.data}
+                    ref={selector => { this.selector = selector; }}
+                    customSelector={<Switch onValueChange={() => this.selector.open()} />}
+                /> */}
+           {/* <ModalPicker
+                    data={this.state.data}
+                    initValue="Select something yummy!"
+                    onChange={(option)=>{ alert(`${option.value} (${option.id}) nom nom nom`) }} /> */}
+
                     <View style={styles.content5}>
                     <Text style={styles.price_text3}>Цвет</Text>
                         <View style={styles.price_text4}>
@@ -373,7 +486,8 @@ const styles = StyleSheet.create({
         // marginBottom: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '58%',
+        width: '66%',
+        // marginLeft: '10%'
         // marginBottom: '2%'
         // backgroundColor: 'red',
         
@@ -501,7 +615,9 @@ const styles = StyleSheet.create({
         // color: 'white',
         fontSize: 15,
         marginBottom: '3%',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        flexDirection: 'row',
+        // backgroundColor: 'red',
         // marginLeft: '4%'
         // marginLeft: 40
     },
@@ -646,4 +762,5 @@ const styles = StyleSheet.create({
     //     marginTop: 12
     //   }
 });
+
 export default AddOb;

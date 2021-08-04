@@ -201,6 +201,9 @@ class VKP extends React.Component {
                   <Text style={isMessage2Display ? styles.notice : styles.hide}>Не все поля заполнены</Text>
                   <Text style={isMessage3Display ? styles.notice : styles.hide}>Профиль успешно обновлён</Text> */}
                 <View style={styles.pred_content}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('MenuScreen')} style={styles.strelka2}>
+                            <Image style={styles.strelka} source={require('../images/strelka.png')} />
+                        </TouchableOpacity>
                     <View style={styles.content}>
                         <View style={styles.img_car}>
                             <Image source={require('../images/rectangles.png')} />
@@ -338,6 +341,9 @@ const styles = StyleSheet.create({
         // backgroundColor: 'black',
         marginBottom: 5,
         flexDirection: 'row',
+    },
+    strelka2: {
+      paddingBottom: 10,
     },
     // loginButtonSection: {
     //     width: 220,

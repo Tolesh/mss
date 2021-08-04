@@ -1,72 +1,27 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList ,SafeAreaView,Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList } from 'react-native';
 import { CheckBox } from 'react-native';
 
-const GLOBAL = require('../views/Globals');
-const getUsersUrl = GLOBAL.BASE_URL + 'ResultScreen.php?action=obv&lang=1';
-const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 
-const dimensions = Dimensions.get('window');
-const windowHeight = dimensions.height;
 class MyOb extends React.Component {
     constructor(props) {
         super(props);
     }
 
     state = {
-        data: [],
-        values: [],
-        search: '',
+        StyleText: false,
     }
 
-    arrayholder = [];
+    test = () => {
 
-    componentDidMount = async () => {
-        const values_response = await fetch(valuesJsonUrl);
-        const values = await values_response.json();
-
-        this.setState({ values });
-
-        this.getUsers();
     }
 
-    getUsers = () => {
-        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
-        const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        console.log(json);
-        fetch(request)
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    throw new Error('Something went wrong on api server!');
-                }
-            })
-            .then(response => {
-                this.setState({ data: response });
-                this.arrayholder = response;
-            }).catch(error => {
-                console.error(error);
-            });
-    }
-
-    searchFilterFunction = (text) => {
-        const newData = this.arrayholder.filter(item => {
-            const itemData = `${item.name.toUpperCase()} ${item.lastname.toUpperCase()}`;
-            const textData = text.toUpperCase();
-            
-            return itemData.indexOf(textData) > -1;
-        });
-
-        this.setState({ data: newData });
-        this.setState({ search: text });
-    };
+    // this.setState({ StyleText: true });
 
     render(){
-        let { data, search } = this.state;
-
+        const { StyleText } = this.state;
             
         return (
             <View style={styles.container}>
@@ -78,30 +33,38 @@ class MyOb extends React.Component {
                         <Text style={styles.text}>Мои объявления</Text>
                     </View>
                 </View>
-                <SafeAreaView scrollEnabled={true}>
-                    <FlatList 
-                        data={this.state.data}
-                        renderItem={({ item }) => (
-                             <View style={styles.content}>
+                <View style={styles.content}>
                     <View style={styles.image_4}>
                         <Image source={require('../images/image_1.jpg')}></Image>
                     </View>
                     <View style={styles.info}>
-                    <Text style={styles.car_name}>{item.nameCars}</Text>
-                    <Text style={styles.car_info}>Год выпуска: {item.years} г</Text>
-                    <Text style={styles.car_info}>Коробка: {item.kpp}</Text>
-                    <Text style={styles.car_info}>Цвет: {item.color}</Text>
-                    <Text style={styles.car_info}>Кол-во мест: {item.mesta}</Text>
+                        <Text style={styles.car_name}>Hyundai Accent</Text>
+                        <Text style={styles.car_info}>Год выпуска: 2018 г</Text>
+                        <Text style={styles.car_info}>Коробка: Автомат</Text>
+                        <Text style={styles.car_info}>Цвет: белый</Text>
+                        <Text style={styles.car_info}>Кол-во мест: 4</Text>
                     </View>
                     <View style={styles.price}>
                             <Image style={styles.price_text} source={require('../images/logo.png')}></Image>
                             <Text style={styles.price_text}>Удалить</Text>
                     </View>
                 </View>
-                    )}
-                  />
-                </SafeAreaView>
-            
+                <View style={styles.content}>
+                    <View style={styles.image_4}>
+                        <Image source={require('../images/image_1.jpg')}></Image>
+                    </View>
+                    <View style={styles.info}>
+                        <Text style={styles.car_name}>Hyundai Accent</Text>
+                        <Text style={styles.car_info}>Год выпуска: 2018 г</Text>
+                        <Text style={styles.car_info}>Коробка: Автомат</Text>
+                        <Text style={styles.car_info}>Цвет: белый</Text>
+                        <Text style={styles.car_info}>Кол-во мест: 4</Text>
+                    </View>
+                    <View style={styles.price}>
+                            <Image style={styles.price_text} source={require('../images/logo.png')}></Image>
+                            <Text style={styles.price_text}>Удалить</Text>
+                    </View>
+                </View>
             </View>
         );
     }

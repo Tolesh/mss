@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button,Dimensions, ScrollView, FlatList, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button,Dimensions, ScrollView, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import { CheckBox } from 'react-native';
 
 const GLOBAL = require('../views/Globals');
@@ -69,7 +69,10 @@ class History extends React.Component {
         let { data, search } = this.state;
         return (
             <View style={styles.container}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('MenuScreen')}>
                 <Image style={styles.image_3} source={require('../images/Group.png')} />
+                </TouchableOpacity>
+                
                 <View style={styles.header}>
                     <View style={styles.block}>
                     </View>
@@ -99,11 +102,15 @@ class History extends React.Component {
                     />
                 </SafeAreaView>
                 <View style={styles.buttons}>
-                    <Button
+                    {/* <Button
                         title="Найти машину"
                         color="#000"
                         
-                    /> 
+                    />  */}
+
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('SearchScreen')} style={styles.button} >
+                        <Text style={styles.text_button}>Найти машину</Text>
+                    </TouchableOpacity>
                 </View>
                 
             </View>
@@ -122,6 +129,15 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
         marginTop: 20
         
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#000000",
+        padding: 10,
+        marginBottom: 5,
+      },
+      text_button: {
+        color: "white",
     },
     header: {
         marginBottom: 20,
