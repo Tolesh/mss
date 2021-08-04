@@ -1,27 +1,72 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList,SafeAreaView,Dimensions } from 'react-native';
 import { CheckBox } from 'react-native';
 
+const GLOBAL = require('../views/Globals');
+const getUsersUrl = GLOBAL.BASE_URL + 'ResultScreen.php?action=obv&lang=1';
+const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
 
+const dimensions = Dimensions.get('window');
+const windowHeight = dimensions.height;
 class MyOb extends React.Component {
     constructor(props) {
         super(props);
     }
 
     state = {
-        StyleText: false,
+        data: [],
+        values: [],
+        search: '',
     }
 
-    test = () => {
+    arrayholder = [];
 
+    componentDidMount = async () => {
+        const values_response = await fetch(valuesJsonUrl);
+        const values = await values_response.json();
+
+        this.setState({ values });
+
+        this.getUsers();
     }
 
-    // this.setState({ StyleText: true });
+    getUsers = () => {
+        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
+        const request = new Request(getUsersUrl, { method: 'POST', body: json });
+        // console.log(json);
+        fetch(request)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                this.setState({ data: response });
+                this.arrayholder = response;
+            }).catch(error => {
+                console.error(error);
+            });
+    }
+
+    searchFilterFunction = (text) => {
+        const newData = this.arrayholder.filter(item => {
+            const itemData = `${item.name.toUpperCase()} ${item.lastname.toUpperCase()}`;
+            const textData = text.toUpperCase();
+            
+            return itemData.indexOf(textData) > -1;
+        });
+
+        this.setState({ data: newData });
+        this.setState({ search: text });
+    };
 
     render(){
-        const { StyleText } = this.state;
+        let { data, search } = this.state;
+
             
         return (
             <View style={styles.container}>
@@ -35,7 +80,30 @@ class MyOb extends React.Component {
                         <Text style={styles.text}>Мои заказы</Text>
                     </View>
                 </View>
-                <View style={styles.content}>
+                <SafeAreaView scrollEnabled={true}>
+                    <FlatList 
+                        data={this.state.data}
+                        renderItem={({ item }) => (
+                             <View style={styles.content}>
+                    <View style={styles.image_4}>
+                        <Image source={require('../images/image_1.jpg')}></Image>
+                    </View>
+                    <View style={styles.info}>
+                    <Text style={styles.car_name}>{item.nameCars}</Text>
+                    <Text style={styles.car_info}>Год выпуска: {item.years} г</Text>
+                    <Text style={styles.car_info}>Коробка: {item.kpp}</Text>
+                    <Text style={styles.car_info}>Цвет: {item.color}</Text>
+                    <Text style={styles.car_info}>Кол-во мест: {item.mesta}</Text>
+                    </View>
+                    <View style={styles.price}>
+                    <Image style={styles.price_text} source={require('../images/logo.png')}></Image>
+                            <Text style={styles.price_text}>с 12.03.20 до 12.04.20</Text>
+                    </View>
+                </View>
+                    )}
+                  />
+                </SafeAreaView>
+                {/* <View style={styles.content}>
                     <View style={styles.image_4}>
                         <Image source={require('../images/image_1.jpg')}></Image>
                     </View>
@@ -66,7 +134,7 @@ class MyOb extends React.Component {
                             <Image style={styles.price_text} source={require('../images/logo.png')}></Image>
                             <Text style={styles.price_text}>с 12.03.20 до 12.04.20</Text>
                     </View>
-                </View>
+                </View> */}
             </View>
         );
     }
