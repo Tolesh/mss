@@ -1,18 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext,useState,useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { View, KeyboardAvoidingView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, Button, Keyboard,Image,Pressable}  from 'react-native';
-import { CheckBox } from 'react-native';
+import { View, KeyboardAvoidingView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, Button, Keyboard,Image,Pressable,FlatList,Dimensions,Modal}  from 'react-native';
+import CheckBox from 'react-native-check-box';
 import CodeInput from 'react-native-code-input';
 import ModalDropdown from 'react-native-modal-dropdown';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import { Avatar } from 'react-native-elements';
-import ImagePicker from 'react-native-image-crop-picker';
-// import ModalSelector from 'react-native-modal-selector';
-// import ModalPicker from 'react-native-modal-picker'
-// import ModalFilterPicker from 'react-native-modal-filter-picker';
+import ActionSheet from "react-native-actions-sheet";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker'
+import Constants from 'expo-constants'
+import * as Permissions from 'expo-permissions'
+import ImageViewer from 'react-native-image-zoom-viewer';
 
-
+// import UpImage from './upImage';
+// import ImageBrowser from './ImageBrowser';
+// import  from 'expo-cameraroll';
 
 const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'AddObyavlenie.php?action=get_colors&lang=1';
@@ -24,19 +28,14 @@ const uploadAvatarUrl = GLOBAL.BASE_URL + 'photoKesler.php?action=upload_avatar&
 const DEMO_OPTIONS_1 = ['2011','2012','2013','2014','2015', '2016', '2017','2018' , '2019', '2020','2021'];
 const DEMO_OPTIONS_2 = ['белый','черный','розовый','красный','синий', 'голубой', 'серый'];
 const DEMO_OPTIONS_3 = ['Полный','Задний','Передний','Гибридный синергетический'];
-
-
+const width = Dimensions.get('window').width;
 const DEMO_OPTIONS_4 = ['4','2'];
 var radio_props = [
     {label: 'Автомат', value: 0 },
     {label: 'Механика', value: 1 }
   ];
-// var radio_props2 = [
-//     {label: 'Сутки', value: 0 },
-//     {label: 'Неделя', value: 1 },
-//     {label: 'Месяц', value: 2 }
-// ];
-class AddOb extends React.Component {
+
+class AddOb extends React.Component {   
     constructor(props) {
         super(props);
         this.state = {
@@ -50,18 +49,18 @@ class AddOb extends React.Component {
             search: [],
             marka: [],
             year: [],
-            checked: [],
+            isChecked: [],
             avatar: 'https://kesler.capsula.kz/images/111.png',
             textInputValue: 'tt',
-            showModal: true
-            // selectedIndex: 0
+            showModal: true,
+            fileList: [],
+            imageBrowserOpen: false,
+            photos: [],
+            LocalImage:[],
+            multipleUrl:[],
+            modalVisible: true
         };
     }
-    // componentWillMount() {
-    //     let { data, checked } = this.state;
-    //     let intialCheck = data.map(x => false);
-    //     this.setState({ checked: intialCheck })
-    // }
     componentDidMount = async () => {
         const values_response = await fetch(valuesJsonUrl);
         const values = await values_response.json();
@@ -99,7 +98,7 @@ class AddOb extends React.Component {
     getMarka = () => {
         var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         const request = new Request(getUsersUrl4, { method: 'POST', body: json });
-        // console.log(getUsersUrl);
+
         fetch(request)
             .then(response => {
                 if (response.status === 200) {
@@ -111,15 +110,10 @@ class AddOb extends React.Component {
             .then(response => {
                 
                 this.setState({ marka: response });
-
-                // this.arrayholder = response;
-                // this.state.colors = this.state.data;
-                // console.log(this.state.data);
             }).catch(error => {
                 console.error(error);
             });
     }
-
     handleAvatar = () => {
         ImagePicker.openPicker({
             width: 200,
@@ -170,30 +164,236 @@ class AddOb extends React.Component {
         }
         return null
     }
+    // imageBrowserCallback = (callback) => {
+    //     callback.then((photos) => {
+    //       console.log(photos)
+    //       this.setState({
+    //         imageBrowserOpen: false,
+    //         photos
+    //       })
+    //     }).catch((e) => console.log(e))
+    //   }
     
+    //   renderImage(item, i) {
+    //     return(
+    //       <Image
+    //         style={{height: 100, width: 100}}
+    //         source={{uri: item.file}}
+    //         key={i}
+    //       />
+    //     )
+    //   }
+
+    componentDidMount = () => {
+        this.getPermissionAsync()
+     }
+     getPermissionAsync = async () => {
+          if (Constants.platform.ios) {const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+     if (status !== 'granted') {
+              alert('Sorry, we need camera roll permissions to make this work!')
+           }
+     }
+     }
+     _pickImage = async () => {
+       let pickerResult = await ImagePicker.launchImageLibraryAsync({
+         mediaTypes: ImagePicker.MediaTypeOptions.All,
+         base64: true,
+         allowsEditing: true,
+         aspect: [4, 3],
+       })
+     let imageUri = pickerResult ?   `data:image/jpg;base64,${pickerResult.base64}` : null
+        imageUri && {uri: imageUri}
+        this.state.multipleUrl.push(imageUri)
+         this.setState({
+     LocalImage: this.state.LocalImage.concat([pickerResult.uri]),
+     })
+     }
+     _takePhoto = async () => {
+     const {
+     status: cameraPerm
+     } = await Permissions.askAsync(Permissions.CAMERA)
+     const {
+     status: cameraRollPerm
+     } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+     // only if user allows permission to camera AND camera roll
+     if (cameraPerm === 'granted' && cameraRollPerm === 'granted') {
+     let pickerResult = await ImagePicker.launchCameraAsync({
+          base64: true,
+          allowsEditing: true,
+          aspect: [4, 3],
+     })
+     if (!pickerResult.cancelled) {
+        let imageUri = pickerResult ?     `data:image/jpg;base64,${pickerResult.base64}` : null
+     this.state.multipleUrl.push(imageUri)
+     this.setState({
+     LocalImage: this.state.LocalImage.concat([pickerResult.uri]),
+         })
+     }
+      }
+     }
+     _renderImages = () => {
+       let images = []
+       this.state.LocalImage.map((item, index) => {
+          images.push(
+<Image  key={index} source={{ uri: item }}  style={{ width:   100, height: 100, marginRight: 5 }} />
+//             <Modal visible={this.state.modalVisible} transparent={true} onRequestClose={() => this.setState({ modalVisible: false })}>
+//             <ImageViewer imageUrls={[{
+//     // Simplest usage.
+//     // url: 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460',
+//     width:   100, height: 100,
+//     // width: number
+//     // height: number
+//     // Optional, if you know the image size, you can set the optimization performance
+
+//     // You can pass props to <Image />.
+//     props: {
+//         source:{ uri: item } 
+//     }
+// }]}
+// onCancel={() => this.setState({modalVisible:true})}
+//   onMove={data => console.log(data)}
+//   enableSwipeDown={true}/>
+//             </Modal>
+            // <Image  key={index} source={{ uri: item }}  style={{ width:   100, height: 100, marginRight: 5 }} />
+            )
+          })
+       return images
+     }
+
+    // openImagePickerAsync = async () => {
+    //     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
+    //     if (permissionResult.granted === false) {
+    //         setImage(null);
+    //   setHasImage(false);
+    //       alert("Permission to access camera roll is required!");
+    //       return;
+    //     }
+    
+    //     let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    //     console.log(pickerResult);
+
+    //     try {
+    //         if (pickerResult.cancelled === true) {
+    //           setHasImage(false);
+    //           console.log('pickerResult is cancelled');
+    //           return;
+    //         }
+      
+    //         if (pickerResult !== null) {
+    //           setHasImage(true);
+    //           setImage(pickerResult.uri);
+    //           console.log(image);
+    //         } else {
+    //           setImage(null);
+    //           setHasImage(false);
+    //           console.log('pickerResult is null');
+    //           return;
+    //         }
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //   }
    
-    render(){
+
     
-        let { marka, year, search,checked} = this.state;
-        
+
+    
+  
+    
+
+    render(){
+        let {btnPressStyle} = styles;
+        let {fileList, marka, year, search,checked} = this.state;
+        if (this.state.imageBrowserOpen) {
+            return(<ImageBrowser max={4} callback={this.imageBrowserCallback}/>);
+          }
         return (
+            
             <View style={styles.container}>
                <View style={styles.pred_content}>
                     <View style={styles.content}>
-                        <View>
-                            <Image  style={styles.img_car} source={require('../images/porsche.png')} />
+                    {/* <UpImage /> */}
+                    
+                        {/* <View> */}
+                            {/* <Image  style={styles.img_car} source={UpImage} /> */}
+
+                        {/* </View>
+                        <View style={styles.info}> */}
+                            
+                        {/* <Image  style={styles.img_car} source={require('../images/mustang.png')} />
+                        <Image  style={styles.img_car} source={require('../images/grew.png')} /> */}
+                        {/* </View> */}
+                        
+                        <View style={{   flexDirection: 'row',
+        justifyContent: 'space-between',width: '100%',marginBottom: '5%'}}>
+            <View style={{flexDirection: 'row'}}>
+                            {this._renderImages()}
                         </View>
-                        <View style={styles.info}>
-                        <Image  style={styles.img_car} source={require('../images/mustang.png')} />
-                        <Image  style={styles.img_car} source={require('../images/grew.png')} />
-                        </View>
-                        <View >
-                        <TouchableOpacity style={styles.price}>
+                        <View style={{}}>
+                             <TouchableOpacity onPress={this._pickImage}>
+                                 <Text style={{fontSize: 15,color: 'black',marginTop: '40%'}}>Выбрать фото</Text>
+                            </TouchableOpacity>
+                         </View>
+           {/* <View style={styles.buttons}>
+                 <Button onPress={this._takePhoto} title="Take a photo" />
+           </View>
+            */}
+                        
+                        {/* <Button
+          title="Choose Images"
+          onPress={() => this.setState({imageBrowserOpen: true})}
+        />
+        <Text>This is an example of a</Text>
+        <Text>multi image selector using expo</Text>
+        <ScrollView>
+          {this.state.photos.map((item,i) => this.renderImage(item,i))}
+        </ScrollView> */}
+                        {/* <TouchableOpacity style={styles.price}>
                             <Image  style={styles.img_car} source={require('../images/plus.png')} />
                             <Text style={styles.price_text}>Добавить фото</Text>
-                        </TouchableOpacity>
-                        <View style={styles.avatarCont}>
+                        </TouchableOpacity> */}
+                        {/* <FlatList 
+                        data = {fileList}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item,index)=> index.toString()}
+                        extraData={this.state}
+
+                        /> */}
+                        {/* <Image source={{ uri: selectedImage.localUri }} style={styles.thumbnail} /> */}
+                   
+                        {/* <TouchableOpacity style={styles.price} onPress={this.openImagePickerAsync}>
+                            <Image  style={styles.img_car} source={require('../images/plus.png')} />
+                            <Text style={styles.price_text}>Добавить фото</Text>
+                        </TouchableOpacity> */}
+      
+                        {/* <ActionSheet  initialOffsetFromBottom={0.7}
+          ref={actionSheetRef}
+          statusBarTranslucent
+        //   onPositionChanged={this.onHasReachedTop}
+          bounceOnOpen={true}
+          options={BUTTONS}
+          drawUnderStatusBar={false}
+          bounciness={4}
+          gestureEnabled={true}
+          defaultOverlayOpacity={0.3}>
+            {/* {colors.map(color => (
+                <TouchableOpacity
+                  onPress={() => {
+                    actionSheetRef.current?.hide();
+                  }}
+                  key={color}
+                  style={[
+                    styles.circle,
+                    {
+                      backgroundColor: color,
+                    },
+                  ]}
+                />
+              ))} */}
+      {/* </ActionSheet> */} 
+                       
+                        {/* <View style={styles.avatarCont}>
                                 <Avatar 
                                     rounded 
                                     size="xlarge"
@@ -203,8 +403,9 @@ class AddOb extends React.Component {
                                     containerStyle={styles.avatar}
                                     onPress={this.handleAvatar}
                                 />
+                        </View> */}
                         </View>
-                        </View>
+                    
                     </View>
                 </View>
                 <View style={styles.pred_content}>
@@ -300,14 +501,21 @@ class AddOb extends React.Component {
                     <View style={styles.content6}>  
                     <View style={styles.ros}>
                       <CheckBox
-                   disabled={false}
-                   value={this.state.toggleCheckBox3}
-                   onValueChange={(value) =>
-                      this.setState({
-                      toggleCheckBox3: value,
-                      })
-                    }
-                    tintColors={{true: '#000000'}}
+                //    disabled={false}
+                   isChecked={this.state.toggleCheckBox3}
+                   onClick={()=>{
+                    this.setState({
+                        toggleCheckBox3:!this.state.toggleCheckBox3,
+                    })
+                  }}
+               
+                //    value={this.state.toggleCheckBox3}
+                //    onValueChange={(value) =>
+                //       this.setState({
+                //       toggleCheckBox3: value,
+                //       })
+                //     }
+                    // tintColors={{true: '#000000'}}
                   style={styles.checkbox}
                   /><Text style={styles.text4}>Сутки</Text>
                    { this.renderElement() }
@@ -316,13 +524,13 @@ class AddOb extends React.Component {
                       <View style={styles.ros}>
                   <CheckBox
                    disabled={false}
-                   value={this.state.toggleCheckBox4}
-                   onValueChange={(value) =>
+                   isChecked={this.state.toggleCheckBox4}
+                   onClick={() =>
                       this.setState({
-                      toggleCheckBox4: value,
+                      toggleCheckBox4: !this.state.toggleCheckBox4,
                       })
                     }
-                    tintColors={{true: '#000000'}}
+                    // tintColors={{true: '#000000'}}
                   style={styles.checkbox}
                   /><Text style={styles.text4}>Неделя</Text>
                   { this.renderElement2() }
@@ -330,10 +538,10 @@ class AddOb extends React.Component {
                   <View style={styles.ros}>
                    <CheckBox
                    disabled={false}
-                   value={this.state.toggleCheckBox5}
-                   onValueChange={(value) =>
+                   isChecked={this.state.toggleCheckBox5}
+                   onClick={() =>
                       this.setState({
-                      toggleCheckBox5: value,
+                      toggleCheckBox5: !this.state.toggleCheckBox5,
                       })
                     }
                     tintColors={{true: '#000000'}}
@@ -356,10 +564,27 @@ class AddOb extends React.Component {
     }
 }
 const styles = StyleSheet.create({
+    // thumbnail: {
+    //     width: 300,
+    //     height: 300,
+    //     resizeMode: 'contain',
+    //   },
+    // btnPressStyle:{
+    //     backgroundColor: '#0090ff',
+    //     height: 50,
+    //     width: width - 60,
+    //     // alignItems: 'center,'
+    //     // justifyContent: 'center'
+    // },
+    // itemImage: {
+    //     height:150,
+    //     width: width -60,
+    //     resizeMode: 'contain'
+    // },
     container: {
         flex: 1,
-        paddingTop: 40,
-        paddingLeft: 30,
+        paddingTop: 60,
+        paddingLeft: 20,
         // paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
@@ -377,6 +602,10 @@ const styles = StyleSheet.create({
     ros:{
         flexDirection: 'row',
     
+    },
+    buttons_texts: {
+        fontSize: 15,
+
     },
     text4: {
         fontSize: 15,
@@ -464,7 +693,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'black',
         // marginBottom: 5,
         flexDirection: 'row',
-        
+        // justifyContent: 'space-between',
         
     },
     price_textText:{
