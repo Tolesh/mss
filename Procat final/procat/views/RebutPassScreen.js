@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { useState } from "react";
-import { StyleSheet, Text, View, Button, TextInput, Switch, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Switch, TouchableOpacity,KeyboardAvoidingView,Keyboard,TouchableWithoutFeedback } from 'react-native';
 
 const GLOBAL = require('../views/Globals');
 // const authUrl = GLOBAL.BASE_URL + 'RebutPassword.php?action=recoverpwd&lang=1';
@@ -43,6 +43,11 @@ class Rebut extends React.Component {
     render() {
 
       return (
+        <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles._input}>
             <TextInput style={styles.input}
@@ -66,6 +71,8 @@ class Rebut extends React.Component {
           </View>
         </View>
       </View>
+      </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
       );
     }
   }
@@ -95,15 +102,15 @@ class Rebut extends React.Component {
       width: 343,
       borderColor: 'black',
       borderWidth: 2,
-      marginBottom: 20,
-      paddingLeft: 10,
+      marginBottom: '5%',
+      paddingLeft: '4%',
     },
     _input: {
       alignItems: 'center',
       marginBottom: -8,
     },
     text: {
-        marginLeft: 34,
+        marginLeft: '4%',
         marginBottom: 111,
     },
     buttons: {
@@ -111,7 +118,8 @@ class Rebut extends React.Component {
         // justifyContent: 'row-reverse', 
         // alignItems: 'center', 
         alignSelf: 'flex-end',
-        marginRight: 36,
+        marginRight: '4%',
+        width: 80
       },
 });
 

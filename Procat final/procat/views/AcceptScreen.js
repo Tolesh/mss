@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity } from 'react-native';
-import { CheckBox } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity,KeyboardAvoidingView,TouchableWithoutFeedback,Keyboard  } from 'react-native';
+import CheckBox from 'react-native-check-box';
 
 const GLOBAL = require('../views/Globals');
 const authUrl = GLOBAL.BASE_URL + 'verifications.php?action=login&lang=1';
@@ -82,6 +82,11 @@ class Accept extends React.Component {
         const { isMessage1Display, isMessage2Display } = this.state;
 
         return (
+            <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.container}
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                     <Text style={isMessage1Display ? styles.notice : styles.hide}>1</Text>
                     <Text style={isMessage2Display ? styles.notice : styles.hide}>2</Text>
@@ -113,20 +118,19 @@ class Accept extends React.Component {
 
                 <View style={styles.checkboxContainer}>
                     <View style={styles.checkboxContainer2}>
-                        <CheckBox
-                            disabled={false}
-                            value={this.state.toggleCheckBox}
-                            onValueChange={(value) =>
-                                this.setState({
-                                    toggleCheckBox: value,
-                                })
-                            }
-                            tintColors={{true: '#000000'}}
-                            style={styles.checkbox}
-                            onPress={() => this.setAgree()}
-                        />
+                    <CheckBox
+                      disabled={false}
+                      isChecked={this.state.toggleCheckBox}
+                      onClick={() =>
+                          this.setState({
+                          toggleCheckBox: !this.state.toggleCheckBox,
+                          })
+                        }
+                        // tintColors={{true: '#000000'}}
+                      style={styles.checkbox}
+                      />
 
-                        <Text style={styles.label}>Remember me</Text>
+                        <Text style={styles.label}>Запомнить меня</Text>
                     </View>
                     
                     {/* <View style={styles.buttons}>
@@ -143,6 +147,8 @@ class Accept extends React.Component {
                 
 
             </View>
+            </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         );
     }
 }
@@ -170,9 +176,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#000000",
         padding: 10,
+    width: 67
       },
     text_button: {
-        color: 'white'
+        color: 'white',
+        fontSize: 13
     },
     input: {
         height: 52,
@@ -187,23 +195,29 @@ const styles = StyleSheet.create({
     },
     checkboxContainer: {
         flexDirection: 'row', 
-        marginLeft: 10,
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginLeft: '4%', 
+    marginRight: '4%', 
+        // marginLeft: 10,
     },
     checkboxContainer2: {
         flexDirection: "row",
-        marginRight: '36%',
+        // marginRight: '36%',
     },
     checkbox: {
-        marginLeft: 20,
+        // marginLeft: 20,
         flexDirection: "row",
     },
     label: {
-        marginTop: 5,
+        marginTop: '2%',
+        marginLeft: '2%',
+        fontSize: 14
     },
-    label2: {
-        fontWeight: 'bold',
-        marginTop: 5,
-    },
+    // label2: {
+    //     fontWeight: 'bold',
+    //     marginTop: 5,
+    // },
       buttons: {
         // flexDirection: 'row',
         // justifyContent: 'space-between',

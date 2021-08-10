@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity } from 'react-native';
-import { CheckBox } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity,KeyboardAvoidingView,Keyboard,TouchableWithoutFeedback } from 'react-native';
+import CheckBox from 'react-native-check-box';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const GLOBAL = require('../views/Globals');
@@ -123,6 +123,11 @@ class Reg extends React.Component {
         const { isMessage1Display, isMessage2Display, isMessage3Display } = this.state;
         
         return (
+            <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.container}
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <Text style={isMessage1Display ? styles.notice : styles.hide}>{this.state.values.MSG_REQUIRED_FIELDS_TITLE}</Text>
                 <Text style={isMessage2Display ? styles.notice : styles.hide}>{this.state.values.MSG_USERS_EXIST_TITLE}</Text>
@@ -165,37 +170,33 @@ class Reg extends React.Component {
                 </View>
 
                 <View style={styles.checkboxContainer}>
-                    {/* <CheckBox
-                        disabled={false}
-                        value={toggleCheckBox}
-                        onValueChange={(newValue) => setToggleCheckBox(newValue)}
-                        onPress={() => this.setAgree()}
-                    /> */}
                         <CheckBox
-                            disabled={false}
-                            value={this.state.toggleCheckBox}
-                            onValueChange={(value) =>
-                                this.setState({
-                                    toggleCheckBox: value,
-                                })
-                            }
-                            tintColors={{true: '#000000'}}
-                            style={styles.checkbox}
-                            onPress={() => this.setAgree()}
-                        />
+                      disabled={false}
+                      isChecked={this.state.toggleCheckBox}
+                      onClick={() =>
+                          this.setState({
+                          toggleCheckBox: !this.state.toggleCheckBox,
+                          })
+                        }
+                        // tintColors={{true: '#000000'}}
+                      style={styles.checkbox}
+                      />
                     <Text style={styles.label}>{this.state.values.STR_AGREE} </Text>
                     <Text style={styles.label2}>{this.state.values.STR_AGREE_POL}</Text>
+                    
                 </View>
-
+                <Text style={styles.label3}>{this.state.values.STR_AGREE_POL2}</Text>
                 <View style={styles.buttons}>
                     <View style={styles.btn2}>
-                        <TouchableOpacity style={styles.button} onPress={this.reg}>
+                        <TouchableOpacity style={styles.buttonZar} onPress={this.reg}>
                             <Text style={styles.text_button}>{this.state.values.STR_BUTTON_REG_TITLE}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
             </View>
+            </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         );
     }
 }
@@ -212,8 +213,15 @@ const styles = StyleSheet.create({
         backgroundColor: "#000000",
         padding: 10
     },
+    buttonZar: {
+        alignItems: "center",
+        backgroundColor: "#000000",
+        padding: 10,
+        width: 235
+    },
     text_button: {
         color: "white",
+        fontSize: 18
     },
     input: {
         height: 52,
@@ -228,18 +236,28 @@ const styles = StyleSheet.create({
       },
     checkboxContainer: {
         flexDirection: "row",
-        marginLeft: 15,
+        marginLeft: '0%',
       },
     checkbox: {
         marginLeft: 20,
-        marginBottom: 15,
+        marginBottom: '0%',
       },
     label: {
-        marginTop: 5,
+        marginTop: '1%',
+        fontSize: 14
       },
     label2: {
         fontWeight: 'bold',
-        marginTop: 5,
+        marginTop: '1%',
+        fontSize: 14,
+
+      },
+      label3: {
+        fontWeight: 'bold',
+        marginBottom: '8%',
+        marginLeft: '12%',
+        marginTop: '-1%',
+        fontSize: 14,
       },
       buttons: {
         flexDirection: 'row',

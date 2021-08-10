@@ -130,7 +130,7 @@ class AddTovar extends React.Component {
                 <View style={styles.buttons}>
                     <Button
                         title="Добавить объявление"
-                        color="#000"
+                        color="#fff"
                     /> 
                 </View>
             </View>
@@ -141,7 +141,7 @@ class AddTovar extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
@@ -151,7 +151,10 @@ const styles = StyleSheet.create({
         // flexDirection: 'row', 
         // justifyContent: 'space-between', 
         alignItems: 'center', 
-        marginTop: 184,
+        marginTop: '40%',
+        width: 220,
+        backgroundColor: 'black',
+        marginLeft: '16%'
     },
     header: {
         // borderWidth: 1,
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
      flexDirection: 'row',
      marginBottom: 25,
     //  backgroundColor: 'red',
-     width: 350
+     width: 335
     },
     logo: {
         marginTop: 3,
@@ -222,13 +225,13 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginTop: 5,
         // backgroundColor: 'blue',
-        width: 155
+        width: 125
     },
     car_name: {
         color: 'black',
         fontSize: 13,
         marginBottom: 5,
-        // backgroundColor: 'red'
+        width: 150
     },
     car_info: {
         color: 'black',
@@ -238,6 +241,7 @@ const styles = StyleSheet.create({
     price: {
         justifyContent: 'space-between',
         alignItems: 'flex-end',
+        // marginRight: '10%'
         // flexDirection: 'column'
         
         // bottom: 0,

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Platform, StyleSheet, Text, View, Button, Image, Pressable } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, Image, Pressable,TouchableOpacity } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HeaderBackButton } from '@react-navigation/stack';
+import { GlobalContextProvider } from './views/GlobalContext';
 
 import Login from "./views/LoginScreen";
 import Reg from "./views/RegScreen";
@@ -24,50 +25,48 @@ import Settings from "./views/SettingScreen";
 import VKP from "./views/VhodKakPartner";
 import AddOb from "./views/AddObyavlenie";
 import Search from "./views/SearchScreen";
+// import { TouchableOpacity } from 'react-native';
 
 const Stack = createStackNavigator();
 
+// const navi = () => {
+// navigation.navigate('MenuScreen')
+// } 
+
 function App() {
+  // const navigation = useNavigation();
   return (
-      <NavigationContainer>
-          <Stack.Navigator initialRouteName='LoginScreen'>
-              {/* Логин/Регистрация */}
-              <Stack.Screen options={{ headerShown: false }} name="LoginScreen" component={Login} /> 
-              <Stack.Screen options={{ headerShown: false }} name="RegScreen" component={Reg} />
-              {/* Восстоновление пароля */}
-              <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen" component={Rebut} />
-              <Stack.Screen options={{ headerShown: false }} name="RebutPassScreen_2" component={Rebut_2}/> 
-              {/* Главная страница */}
-              <Stack.Screen options={{ headerShown: false }} name="HistoryScreen" component={History} />
-              {/* Поиск машин */}
-              <Stack.Screen options={{ headerShown: false }} name="SearchScreen" component={Search} />
-              {/* Меню */}
-              <Stack.Screen options={{ headerShown: false }} name="MenuScreen" component={Menu} />
-              {/* Профиль/Сохранение профиля */}
-              <Stack.Screen options={{ headerShown: false }} name="VhodKakPartner" component={VKP} />
-              {/* Настройик */}
-              <Stack.Screen options={{ headerShown: false }} name="SettingScreen" component={Settings} />
-              {/* Мои заказы */}
-              <Stack.Screen options={{ headerShown: false }} name="MyZakaz" component={MyZakaz} />
-              {/* Фильтр марок */}
-              <Stack.Screen options={{ headerShown: false }} name="FilterScreen" component={Filter} /> 
-              {/* Результат поиска */}
-              <Stack.Screen options={{ headerShown: false }} name="ResultScreen" component={Result} />
-              {/* Товар/Карточка товара */}
-              <Stack.Screen options={{ headerShown: false }} name="TovarScreen" component={Tovar} />
+      <GlobalContextProvider>
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName='VhodKakPartner'>
+                {/* <Stack.Screen options={{headerTitle: 'Авторизация',headerTitleStyle: {color: '#000', fontSize: 20}}} name="LoginScreen" component={Login} /> */}
+                {/* <Stack.Screen options={{headerTitle: 'Регистрация',headerTitleStyle: {color: '#000', fontSize: 20}}} name="RegScreen" component={Reg} /> */}
+                
+                
+                {/* <Stack.Screen options={{headerShown: false}} name="FilterScreen" component={Filter} /> */}
+                
+                
+                {/* <Stack.Screen options={{ headerTitle: 'Восстановление пароля',headerTitleStyle: {color: '#000', fontSize: 20} }} name="RebutPassScreen" component={Rebut} /> */}
+                {/* <Stack.Screen options={{ headerTitle: 'Восстановление пароля',headerTitleStyle: {color: '#000', fontSize: 20} }} name="RebutPassScreen_2" component={Rebut_2} /> */}
+                {/* <Stack.Screen options={{ headerTitle: 'Редактирования товара',headerTitleStyle: {color: '#000', fontSize: 20}  }} name="TovarScreen2" component={Tovar2} /> */}
+                {/* <Stack.Screen options={{  headerTitle: 'Поиск машины',headerTitleStyle: {color: '#000', fontSize: 20} }} name="HistoryScreen" component={History} /> */}
+                {/* <Stack.Screen options={{headerTitle: 'Меню',headerTitleStyle: {color: '#000', fontSize: 20},headerBackTitleStyle: {color: 'black',fontSize: 15}, headerTintColor: 'black'}} name="MenuScreen" component={Menu} /> */}
+                {/* <Stack.Screen options={{ headerTitle: 'Добавить объявление',headerTitleStyle: {color: '#000', fontSize: 20}  }} name="AddTovarScreen" component={AddTovar} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="MyOb" component={MyOb} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="MyZakaz" component={MyZakaz} /> */}
+                {/* <Stack.Screen options={{headerTitle: 'Меню',headerTitleStyle: {color: '#000', fontSize: 20}}} name="MenuPartnerScreen" component={MenuPart} /> */}
+                {/* <Stack.Screen options={{ headerShown: false }} name="SettingScreen" component={Settings} /> */}
 
+                {/* <Stack.Screen options={{headerTitle: 'Регистрация партнера',headerTitleStyle: {color: '#000', fontSize: 20} }} name="VhodKakPartner" component={VKP} /> */}
+                {/* <Stack.Screen options={{ headerTitle: 'Верификация',headerTitleStyle: {color: '#000', fontSize: 20} }} name="AcceptScreen" component={Accept} /> */}
 
-
-              {/* <Stack.Screen options={{ headerShown: false }} name="AddTovarScreen" component={AddTovar} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="MyOb" component={MyOb} />  */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="MenuPartnerScreen" component={MenuPart} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="AcceptScreen" component={Accept} />  */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="AddObyavlenie" component={AddOb} /> */}
-              {/* <Stack.Screen options={{ headerShown: false }} name="TovarScreen2" component={Tovar2} />  */}
-
-              
-          </Stack.Navigator>
-      </NavigationContainer>
+                {/* <Stack.Screen options={{ headerTitle: 'Добавить объявление',headerTitleStyle: {color: '#000', fontSize: 20}  }} name="AddObyavlenie" component={AddOb} /> */}
+                <Stack.Screen options={{ headerShown: false }} name="SearchScreen" component={Search} />
+                {/* <Stack.Screen options={{ headerTitle: 'Результат поиска',headerTitleStyle: {color: '#000', fontSize: 20}  }} name="ResultScreen" component={Result} /> */}
+                {/* <Stack.Screen options={{ headerTitle: 'Аренда машины',headerTitleStyle: {color: '#000', fontSize: 20}  }} name="TovarScreen" component={Tovar} /> */}
+            </Stack.Navigator>
+        </NavigationContainer>
+      </GlobalContextProvider>
   );
 }
 

@@ -111,7 +111,7 @@ class Tovar extends React.Component {
                 <View style={styles.buttons}>
                     <Button
                         title="Арендовать машину"
-                        color="#000"
+                        color="#fff"
                     /> 
                 </View>
             </View>
@@ -122,7 +122,7 @@ class Tovar extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
@@ -131,7 +131,11 @@ const styles = StyleSheet.create({
     buttons: {
         // flexDirection: 'row', 
         // justifyContent: 'space-between', 
-        alignItems: 'center', 
+        alignItems: 'center',
+        backgroundColor: 'black' ,
+        width: 220,
+        marginLeft: '28%',
+        marginTop: '6%'
     },
     header: {
         // borderWidth: 1,

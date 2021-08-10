@@ -218,3 +218,5 @@ const styles = StyleSheet.create({
         marginBottom: 3,
     },
 });
+
+export default Result;

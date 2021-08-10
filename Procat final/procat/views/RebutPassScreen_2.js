@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity,KeyboardAvoidingView,Keyboard,TouchableWithoutFeedback } from 'react-native';
 
 const GLOBAL = require('../views/Globals');
 const authUrl = GLOBAL.BASE_URL + 'RebutPassword.php?action=recoverpwd&lang=1';
@@ -96,6 +96,11 @@ class Rebut_2 extends React.Component {
         const { isMessage1Display, isMessage2Display, isMessage3Display } = this.state;
 
         return (
+            <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <Text style={isMessage1Display ? styles.notice : styles.hide}>Вы успешно изменили пароль</Text>
                 <Text style={isMessage2Display ? styles.notice : styles.hide}>Такой пользователь не найден</Text>
@@ -133,7 +138,7 @@ class Rebut_2 extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.btn2}>
-                        <TouchableOpacity onPress={this.RebutPass} style={styles.button}>
+                        <TouchableOpacity onPress={this.RebutPass} style={styles.button2}>
                             <Text style={styles.text_button}>{this.state.values.MSG_REBUT_SCREEN2_READY}</Text>
                         </TouchableOpacity>
                     </View>
@@ -146,7 +151,10 @@ class Rebut_2 extends React.Component {
                         </TouchableOpacity>
                     </View> */}
                 </View>
+                {/* <StatusBar style="auto" /> */}
             </View>
+        </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
         );
     }
 }
@@ -171,9 +179,18 @@ const styles = StyleSheet.create({
         backgroundColor: "#000000",
         padding: 10,
         marginBottom: 5,
+        width: 120,
+    },
+    button2: {
+        alignItems: "center",
+        backgroundColor: "#000000",
+        padding: 10,
+        marginBottom: 5,
+        width: 82,
     },
     text_button: {
         color: "white",
+        fontSize: 13
     },
     _input: {
         alignItems: 'center',
@@ -182,8 +199,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
-        marginLeft: 36, 
-        marginRight: 36,
+        marginLeft: '4%', 
+        marginRight: '4%',
     },
     notice: {
         position: 'absolute',

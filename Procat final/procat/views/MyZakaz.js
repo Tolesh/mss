@@ -72,9 +72,7 @@ class MyOb extends React.Component {
             <View style={styles.container}>
                 <View style={styles.head}>
                     <View style={styles.test}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('MenuScreen')}>
-                            <Image style={styles.strelka} source={require('../images/strelka.png')} />
-                        </TouchableOpacity>
+                        <Image style={styles.strelka} source={require('../images/strelka.png')} />
                     </View>
                     <View style={styles.test2}>
                         <Text style={styles.text}>Мои заказы</Text>
@@ -179,12 +177,13 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         // marginTop: 5,
         // backgroundColor: 'blue',
-        width: 155
+        width: 120
     },
     car_name: {
         color: 'black',
         fontSize: 13,
         marginBottom: 5,
+        width: 150,
     },
     car_info: {
         color: 'black',

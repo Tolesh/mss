@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList } from 'react-native';
 import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
-import { CheckBox } from 'react-native';
+import CheckBox from 'react-native-check-box';
 import SwitchSelector from "react-native-switch-selector";
 import { colors } from 'react-native-elements';
 import {useTranslation} from 'react-i18next';
@@ -61,9 +61,7 @@ class Settings extends React.Component {
             <View style={styles.container}>
                 <View style={styles.head}>
                     <View style={styles.test}>
-                        <TouchableOpacity  onPress={() => this.props.navigation.navigate('MenuScreen')}>
-                            <Image style={styles.strelka} source={require('../images/strelka.png')} />
-                        </TouchableOpacity>
+                        <Image style={styles.strelka} source={require('../images/strelka.png')} />
                     </View>
                     <View style={styles.test2}>
                         <Text style={styles.text}>Настройки</Text>
@@ -110,51 +108,45 @@ class Settings extends React.Component {
                                     // onValueChange={setSelection}
                                     // style={styles.checkbox}
                                 /> */}
-                                  <CheckBox
-                            // disabled={false}
-                            value={this.state.nalic}
-                            onValueChange={(value) =>
-                                this.setState({
-                                    nalic: value,
-                                })
-                            }
-                            // onPress={(value) => { this.setState({ nalic: value})}}
-                            tintColors={{true: '#000000'}}
-                            style={styles.checkbox}
-                            // onPress={() => this.setAgree()}
-                        />
+                              <CheckBox
+                      disabled={false}
+                      isChecked={this.state.nalic}
+                      onClick={() =>
+                          this.setState({
+                            nalic: !this.state.nalic,
+                          })
+                        }
+                        // tintColors={{true: '#000000'}}
+                      style={styles.checkbox}
+                      />
                             </View>
                             <View style={styles.text_accardion_row}>
                                 <Text style={styles.text_accardion_foot}>Уведомлять о начале аренды</Text>
-                                <CheckBox
-                            disabled={false}
-                            value={this.state.nachal}
-                            onValueChange={(value) =>
-                                this.setState({
-                                    nachal: value,
-                                })
-                            }
-                            // onPress={(value) => { this.setState({ nachal: value})}}
-                            tintColors={{true: '#000000'}}
-                            style={styles.checkbox}
-                            // onPress={() => this.setAgree()}
-                        />
+                        <CheckBox
+                      disabled={false}
+                      isChecked={this.state.nachal}
+                      onClick={() =>
+                          this.setState({
+                            nachal: !this.state.nachal,
+                          })
+                        }
+                        // tintColors={{true: '#000000'}}
+                      style={styles.checkbox}
+                      />
                             </View>
                             <View style={styles.text_accardion_row}>
                                 <Text style={styles.text_accardion_foot}>Уведомлять о завершении аренды</Text>
                                 <CheckBox
-                            disabled={false}
-                            value={this.state.zaversh}
-                            onValueChange={(value) =>
-                                this.setState({
-                                    zaversh: value,
-                                })
-                            }
-                            // onPress={(value) => { this.setState({ zaversh: value})}}
-                            tintColors={{true: '#000000'}}
-                            style={styles.checkbox}
-                            // onPress={() => this.setAgree()}
-                        />
+                      disabled={false}
+                      isChecked={this.state.zaversh}
+                      onClick={() =>
+                          this.setState({
+                            zaversh: !this.state.zaversh,
+                          })
+                        }
+                        // tintColors={{true: '#000000'}}
+                      style={styles.checkbox}
+                      />
                             </View>
                         </CollapseBody>
                     </Collapse>
@@ -163,7 +155,7 @@ class Settings extends React.Component {
                         <Button
                             onPress={this.Search}
                             title="Сохранить"
-                            color="#000" 
+                            color="#fff" 
                             />
                        
                     </View>
@@ -189,15 +181,18 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
     },
     loginButtonSection: {
-        width: '30%',
-        marginTop: '5%',
+        width: '50%',
+        marginLeft: '14%',
+        marginTop: '10%',
         // height: '30%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'black'
      },
     img_polygon:{
         marginRight: '8%',
-        marginTop: '2%'
+        marginTop: '2%',
+        // marginBottom: '3%'
     },
     head: {
         flexDirection: 'row',
@@ -206,7 +201,10 @@ const styles = StyleSheet.create({
         // justifyContent: 'space-around',
         marginBottom: 20,
     },
-    
+    checkbox: {
+        // marginTop: '4%',
+        marginBottom: '0%',
+      },
     text_accardion: {
         fontSize: 18,
         marginBottom: 5,
@@ -214,12 +212,13 @@ const styles = StyleSheet.create({
     text_accardion_foot: {
         fontSize: 12,
         marginLeft: 15,
-        marginTop: 10,
+        marginTop: '1.5%',
         flexDirection: 'row-reverse',
     },
     text_accardion_row: {
         flexDirection: 'row',
         width: 270,
+        // marginTop: '10%',
         justifyContent: 'space-between',
         // backgroundColor:'red's
     },

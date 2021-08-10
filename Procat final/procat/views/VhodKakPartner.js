@@ -1,7 +1,7 @@
 import React, { useContext  } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { View, KeyboardAvoidingView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, Button, Keyboard, Image } from 'react-native';
+import { View, TextInput, StyleSheet, Text, Platform, TouchableOpacity, Button, Image,KeyboardAvoidingView,Keyboard,TouchableWithoutFeedback  } from 'react-native';
 import { CheckBox } from 'react-native';
 import CodeInput from 'react-native-code-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -196,14 +196,16 @@ class VKP extends React.Component {
     render(){
 
         return (
+      //     <KeyboardAvoidingView
+      //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+      //   style={styles.container}
+      // >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                   {/* <Text style={isMessage1Display ? styles.notice : styles.hide}>Профиль успешно сохранён</Text>
                   <Text style={isMessage2Display ? styles.notice : styles.hide}>Не все поля заполнены</Text>
                   <Text style={isMessage3Display ? styles.notice : styles.hide}>Профиль успешно обновлён</Text> */}
                 <View style={styles.pred_content}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('MenuScreen')} style={styles.strelka2}>
-                            <Image style={styles.strelka} source={require('../images/strelka.png')} />
-                        </TouchableOpacity>
                     <View style={styles.content}>
                         <View style={styles.img_car}>
                             <Image source={require('../images/rectangles.png')} />
@@ -321,13 +323,14 @@ class VKP extends React.Component {
             </TouchableWithoutFeedback>
           </KeyboardAvoidingView> */}
           </View>
+</TouchableWithoutFeedback>
         );
     }
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         // paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
@@ -339,11 +342,8 @@ const styles = StyleSheet.create({
     },
     content: {
         // backgroundColor: 'black',
-        marginBottom: 5,
+        marginBottom: '5%',
         flexDirection: 'row',
-    },
-    strelka2: {
-      paddingBottom: 10,
     },
     // loginButtonSection: {
     //     width: 220,
@@ -373,6 +373,7 @@ const styles = StyleSheet.create({
     button2: {
       alignItems: "center",
       backgroundColor: "#000000",
+      marginTop: '4%',
       padding: 10
     },
     button: {
@@ -395,7 +396,7 @@ const styles = StyleSheet.create({
     header2: {
         // borderWidth: 1,
         flexDirection: 'row',
-        paddingBottom: 10,
+        paddingBottom: '4%',
         height: 40,
         // backgroundColor: 'red'
         // justifyContent: 'space-between'
@@ -403,7 +404,7 @@ const styles = StyleSheet.create({
     header3: {
         // borderWidth: 1,
         flexDirection: 'row',
-        paddingBottom: 10,
+        paddingBottom: '4%',
         height: 40,
         // backgroundColor: 'red'
         // justifyContent: 'space-between'
@@ -414,7 +415,7 @@ const styles = StyleSheet.create({
         // paddingBottom: 10,
         bottom: 0,
         position: 'absolute',
-        marginBottom: 80,
+        marginBottom: '15%',
         // height: 40,
         width: 220,
         // alignItems: 'center',

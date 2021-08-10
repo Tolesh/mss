@@ -46,25 +46,25 @@ class MenuPart extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         // paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
         // alignItems: 'center',
     },
     strelka: {
-        marginTop: 10,
-        marginLeft: 36,
-        marginBottom: 30,
+        marginTop: '4%',
+        marginLeft: '10%',
+        marginBottom: '8%',
     },
     text_menu: {
         fontSize: 24,
-        marginLeft: 40,
-        marginBottom: 30,
+        marginLeft: '11%',
+        marginBottom: '8%',
     },
     footer: {
         alignItems: 'center',
-        marginBottom: 48,
+        marginBottom: '14%',
         borderTopWidth: 2,
     },
     body: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     },
     text_footer: {
         fontSize: 12,
-        marginTop: 15,
+        marginTop: '5%',
     },
 });
 

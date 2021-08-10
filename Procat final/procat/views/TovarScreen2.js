@@ -41,7 +41,8 @@ class Tovar2 extends React.Component {
                 <View style={styles.buttons}>
                     <Button
                         title="Редактировать"
-                        color="#000"
+                        color="#fff"
+                        
                     /> 
                 </View>
             </View>
@@ -52,7 +53,7 @@ class Tovar2 extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
@@ -60,8 +61,11 @@ const styles = StyleSheet.create({
       },
     buttons: {
         // flexDirection: 'row', 
-        // justifyContent: 'space-between', 
+        // justifyContent: 'center', 
         alignItems: 'center', 
+        backgroundColor: 'black',
+        width : 160,
+        marginLeft: '25%'
     },
     header: {
         // borderWidth: 1,
@@ -88,7 +92,9 @@ const styles = StyleSheet.create({
     },
     text: {
         // flexDirection: 'row'
-        fontSize: 12
+        fontSize: 12,
+        marginTop: '2%',
+        marginBottom: '3%'
     },
     text2: {
         fontSize: 10,
@@ -96,6 +102,7 @@ const styles = StyleSheet.create({
     },
     text_content: {
         fontSize: 12,
+        width: 298
     },
     price: {
         paddingBottom: 28,

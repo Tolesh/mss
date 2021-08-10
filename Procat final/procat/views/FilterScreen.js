@@ -1,140 +1,195 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList, TouchableHighlight, map } from 'react-native';
-import { CheckBox } from 'react-native-elements'
+import { CheckBox } from 'react-native-elements';
+import { StyleSheet, Text, View, Image, Pressable, TextInput,FlatList,Form,TouchableOpacity,Dimensions,SafeAreaView, ScrollView } from 'react-native';
+import { withGlobalContext } from './GlobalContext';
 
 const GLOBAL = require('../views/Globals');
-const getListUrl = GLOBAL.BASE_URL + 'HistoryScreen.php?action=get_marks&lang=1';
+const getUsersUrl = GLOBAL.BASE_URL + 'MarksScreen.php?action=get_marks&lang=1';
+const valuesJsonUrl = GLOBAL.BASE_URL + 'values.php?action=get_values&lang=1';
+
+const dimensions = Dimensions.get('window');
+const windowHeight = dimensions.height;
 
 class Filter extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    state ={
+        // toggle: true,   
+        data: [],
+        values: [],
+        selected_mark_titles: [],
+        selected_mark_ids: [],
+    }
+   
+    componentWillMount() {
+        let { data, checked } = this.state;
+        let intialCheck = data.map(x => false);
+        this.setState({ checked: intialCheck })
+    }
 
+    // componentDidMount = async () => {
+    //     const response = await fetch(getListUrl);
+    //     const values_response = await fetch(valuesJsonUrl);
+    //     const data = await response.json();
+    //     const values = await values_response.json();
+
+    //     this.setState({ data });
+    //     this.setState({ values });
+
+    //     this.getUsers();
+    // }
+    componentDidMount = async () => {
+        const values_response = await fetch(valuesJsonUrl);
+        const values = await values_response.json();
+
+        this.setState({ values });
+
+        this.getUsers();
+    }
+    getUsers = () => {
+        var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
+        const request = new Request(getUsersUrl, { method: 'POST', body: json });
+        // console.log(request);
+        fetch(request)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong on api server!');
+                }
+            })
+            .then(response => {
+                // console.log(response);
+                this.setState({ data: response });
+                this.arrayholder = response;
+            }).catch(error => {
+                console.error(error);
+            });
+    }
+    searchFilterFunction = (text) => {
+        const newData = this.arrayholder.filter(item => {
+            const itemData = `${item.name.toUpperCase()} ${item.lastname.toUpperCase()}`;
+            const textData = text.toUpperCase();
+            
+            return itemData.indexOf(textData) > -1;
+        });
+
+        this.setState({ data: newData });
+        this.setState({ search: text });
+    };
     // constructor(props) {
     //     super(props);
     
-    //     this.state = {
-    //         backgroundColor: '#979797', // default button color goes here, grey is default
-    //     };
-    //   }
+    // this.state = {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-          pressStatus: false 
-        };
-    }
-
-    state = {
-        values: [],
-        marks: [],
-        data: [],
-        checked: [],
-        laps: [],
-    }
-
-    // componentWillMount() {
-    //     let { data, checked } = this.state;
-    //     let intialCheck = data.map(x => false);
-    //     this.setState({ checked: intialCheck })
+    //   };
     // }
+   
+// _onPress(id){
+//     this.state.ides = id
 
-    componentDidMount = async () => {
-        const response = await fetch(getListUrl);
-        const marks = await response.json();
+//    if(this.state.ides == id){
+//         const newState = !this.state.toggle;
+//     this.setState({toggle:newState})
+//    }
+    
+// }
 
-        this.setState({ marks });
-    }
+handleChange = (value, id, index) => {
+    let checked = [...this.state.checked];
+    checked[index] = !checked[index];
+    this.setState({ checked });
+    this.state.selected_mark_titles.push(value);
+    this.state.selected_mark_ids.push(id);
+}
 
-    // _onHideUnderlay(){
-    //     this.setState({ pressStatus: false });
-    // }
+toggle = () => {
+    let newArray = [];
+    let newIdsArray = [];
 
-    // _onShowUnderlay(){
-    //     this.setState({ pressStatus: true });
-    // }
+    this.state.selected_mark_titles.forEach(element => {
+        if (!newArray.some(o => o[0] === element[0])) {
+            newArray.push(element)
+        }
+    });
 
-    // onButtonPress = () => {
-    //     if(this.state.buttonColor=='#ff002b')
-    //     {
-    //       this.setState({ backgroundColor: '#979797' }) // grey
-    //     }
-    //     else {
-    //       this.setState({ backgroundColor: '#ff002b' }) // red
-    //     }
-    // }
-
-    handleChange = (index) => {
-        let checked = [...this.state.checked];
-        checked[index] = !checked[index];
-        this.setState({ checked });
-    }
-
-
-    // this.setState({ StyleText: true });
-
+    this.state.selected_mark_ids.forEach(element => {
+        if (!newIdsArray.some(o => o[0] === element[0])) {
+            newIdsArray.push(element)
+            // console.log(newIdsArray);
+        }
+    });
+    
+    this.props.global.selected = newArray;
+    this.props.global.selected_ids = newIdsArray;
+    this.props.navigation.navigate('SearchScreen');
+}
     render(){
-        // const { StyleText } = this.state;
-        // this.state.active == true ? console.log("selected") : console.log("unselected")
-
-        // return this.state.data.map((item) => {
-        //     return (
-        //       <View><Text>{item.time}</Text></View>
-        //     )
-        // })
-            
+//  const {toggle} = this.state;
+//  const ButtonBG = toggle?"white":"black";
+//  const textColor = toggle?"black":"white";    
+ let { data, search,checked } = this.state;   
+   
         return (
             <View style={styles.container}>
                 <View style={styles.head}>
                     <View style={styles.test}>
-                        <Image style={styles.strelka} source={require('../images/strelka.png')} />
+                    <Pressable onPress={() => this.props.navigation.navigate('SearchScreen')}><Image style={styles.strelka} source={require('../images/strelka.png')} /></Pressable>
                     </View>
                     <View style={styles.test2}>
                         <Text style={styles.text}>Марка</Text>
                     </View>
+                    <View style={styles.test3}>
+                    <TouchableOpacity onPress={this.toggle}><Text style={styles.text2}>Выбрать</Text></TouchableOpacity>
+                    </View>
                 </View>
                 <View style={styles.body}>
-                    <FlatList
-                        data={this.state.marks}
+                    <SafeAreaView style={styles.SafeAreaView}>
+                {/* <ScrollView bounces={true}> */}
+                    <FlatList 
+                    removeClippedSubviews={true}
+                    maxToRenderPerBatch={3}
+                        data={this.state.data}
                         extraData={this.state}
-                        renderItem={({ item, index }) =>
-                            <View>
-                                {/* <CheckBox
+                        renderItem={({ item, index }) => (
+                            <View style={styles.bb}>
+                                 <CheckBox
                                     title={item.value}
                                     checkedIcon='dot-circle-o'
                                     uncheckedIcon='circle-o'
-                                    // checked={checked[index]}
+                                    checked={checked[index]}
                                     textStyle={styles.checkboxText}
                                     containerStyle={styles.checkbox}
-                                    onPress={() => this.handleChange(index)}
-                                    checkedColor="#32B2FF"
-                                    uncheckedColor="#32B2FF"
-                                /> */}
-                                <CheckBox
-                                    style={styles.active}
-                                    title={item.value}
-                                    checked={this.state.checked}
-                                    // onPress={() => {
-                                    //     console.log('You tapped the Decrypt button!');
-                                    //   }}
-                                    // onPress={() => this.handleChange(index)}
+                                    onPress={() => this.handleChange(item.value, item.id, index)}
+                                    checkedColor="#000"
+                                    uncheckedColor="#000"
                                 />
+                            {/* <TouchableOpacity
+                            onPress={()=>this._onPress(item.id)}
+                            style={{backgroundColor:ButtonBG}}
+                            >
+                                <Text style={{color:textColor,fontSize:14,marginLeft:'7%',marginTop: '1%',marginBottom: '1%'}}>{item.value}</Text>
+                            </TouchableOpacity> */}
                             </View>
-                        }
-                    />
-                    {/* <Button onPress={this.onButtonPress} 
-                        title="Nissan"
-                    /> */}
-                    {/* <TouchableHighlight
-                        onPress={()=>{}}
-                        activeOpacity={0.5}
-                        style={this.state.pressStatus ? styles.active : styles.no_active}
-                        onHideUnderlay={this._onHideUnderlay.bind(this)}
-                        onShowUnderlay={this._onShowUnderlay.bind(this)}
-                        >
-                        <Text>Nissan</Text>
-                    </TouchableHighlight>
-                    <Text style={styles.active}>Nissan</Text>
-                    <Text style={styles.car_name}>Lexus</Text>
+                            )}
+                            />
+                            
+                {/* </ScrollView> */}
+                </SafeAreaView>
+                
+                {/* <View style={styles.bb}>
+                <TouchableOpacity
+                onPress={()=>this._onPress()}
+                style={{backgroundColor:ButtonBG}}
+                >
+                    <Text style={{color:textColor,fontSize:14,marginLeft:'7%',marginTop: '1%',marginBottom: '1%'}}>Nissan</Text>
+                </TouchableOpacity>
+                </View> */}
+                    {/* <Text style={StyleText ? styles.active : styles.no_active}>Nissan</Text> */}
+                    {/* <Text style={styles.car_name}>Lexus</Text>
                     <Text style={styles.car_name}>Toyota</Text>
                     <Text style={styles.car_name}>Honda</Text>
                     <Text style={styles.car_name}>Cadilac</Text>
@@ -142,6 +197,7 @@ class Filter extends React.Component {
                     <Text style={styles.car_name}>Mersedes</Text>
                     <Text style={styles.car_name}>Hyundai</Text> */}
                 </View>
+                
             </View>
         );
     }
@@ -156,6 +212,13 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
     },
+    SafeAreaView : {
+        // flex: 1,
+        // marginTop: windowHeight + StatusBar.currentHeight
+    },
+    bb: {
+        marginBottom: "3%"
+    },
     head: {
         flexDirection: 'row',
         // alignItems: 'center',
@@ -168,20 +231,33 @@ const styles = StyleSheet.create({
     },
     active: {
         backgroundColor: 'black',
-        color: 'white',
-        paddingLeft: 30,
-        fontSize: 14,
-        marginBottom: 15,
+        // color: 'white',
+        // paddingLeft: 30,
+        // fontSize: 14,
+        // marginBottom: 15,
+    },
+    buttonStyle: {
+        backgroundColor: "#fff",
+    },
+    titleStyle: {
+        color: "#000",
+        paddingRight: "76%",
+        fontSize: 14
     },
     no_active: {
         backgroundColor: 'white',
-        color: 'black',
-        paddingLeft: 30,
-        fontSize: 14,
-        marginBottom: 15,
+        // color: 'black',
+        // paddingLeft: 30,
+        // fontSize: 14,
+        // marginBottom: 15,
     },
     text: {
         fontSize: 18,
+        fontWeight: 'bold',
+        
+    },
+    text2: {
+        fontSize: 14,
         fontWeight: 'bold',
         
     },
@@ -193,15 +269,22 @@ const styles = StyleSheet.create({
     },
     test: {
         justifyContent: 'center',
-        width: '35%',
+        width: '36%',
+        // backgroundColor: 'red'
     },
     test2: {
         justifyContent: 'center',
-        width: '50%',
+        width: '40%',
+        // backgroundColor: 'yellow'
+    },
+    test3: {
+        justifyContent: 'center',
+        width: '18%',
+        // backgroundColor: 'green'
     },
     strelka: {
         
     },
 });
 
-export default Filter;
+export default withGlobalContext(Filter);

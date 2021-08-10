@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button,Dimensions, ScrollView, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button,Dimensions, ScrollView, FlatList, SafeAreaView ,TouchableOpacity} from 'react-native';
 import { CheckBox } from 'react-native';
 
 const GLOBAL = require('../views/Globals');
@@ -14,6 +14,25 @@ const windowHeight = dimensions.height;
 class History extends React.Component {
     constructor(props) {
         super(props);
+        this.props.navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity                
+                onPress={() => this.props.navigation.navigate('MenuScreen')}
+                // style={{backgroundColor: 'black'}}
+            >
+             <Image style={{marginTop: 5,marginLeft: 15}} source={require('../images/Group.png')} />
+            </TouchableOpacity>
+    
+            ),
+            // headerRight: () => {
+            //     <TouchableOpacity                
+            //     onPress={() => this.props.navigation.goBack()}
+            //     // style={{backgroundColor: 'black'}}
+            // >
+            //  <Image style={{marginTop: 5,marginRight: 10,color: 'black'}} source={require('../images/strelka.png')} />
+            // </TouchableOpacity>
+            // }
+        });
     }
 
     state = {
@@ -36,7 +55,7 @@ class History extends React.Component {
     getUsers = () => {
         var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        console.log(json);
+        // console.log(json);
         fetch(request)
             .then(response => {
                 if (response.status === 200) {
@@ -64,15 +83,12 @@ class History extends React.Component {
         this.setState({ data: newData });
         this.setState({ search: text });
     };
-
+    
     render(){
         let { data, search } = this.state;
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('MenuScreen')}>
-                <Image style={styles.image_3} source={require('../images/Group.png')} />
-                </TouchableOpacity>
-                
+                {/* <Image style={styles.image_3} source={require('../images/Group.png')} /> */}
                 <View style={styles.header}>
                     <View style={styles.block}>
                     </View>
@@ -102,15 +118,11 @@ class History extends React.Component {
                     />
                 </SafeAreaView>
                 <View style={styles.buttons}>
-                    {/* <Button
+                    <Button
                         title="Найти машину"
-                        color="#000"
-                        
-                    />  */}
-
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('SearchScreen')} style={styles.button} >
-                        <Text style={styles.text_button}>Найти машину</Text>
-                    </TouchableOpacity>
+                        color="#fff"
+                        onPress={() => this.props.navigation.navigate('SearchScreen')}
+                    /> 
                 </View>
                 
             </View>
@@ -121,23 +133,17 @@ class History extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         paddingLeft: 21,
         backgroundColor: 'white',
       },
     buttons: {
         alignItems: 'center', 
-        marginTop: 20
+        marginTop: 20,
+        width: 220,
+        backgroundColor: 'black',
+        marginLeft: '16%'
         
-    },
-    button: {
-        alignItems: "center",
-        backgroundColor: "#000000",
-        padding: 10,
-        marginBottom: 5,
-      },
-      text_button: {
-        color: "white",
     },
     header: {
         marginBottom: 20,
