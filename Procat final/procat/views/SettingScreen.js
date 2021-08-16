@@ -59,7 +59,7 @@ class Settings extends React.Component {
             
         return (
             <View style={styles.container}>
-                <View style={styles.head}>
+                {/* <View style={styles.head}>
                     <View style={styles.test}>
                         <Image style={styles.strelka} source={require('../images/strelka.png')} />
                     </View>
@@ -67,7 +67,7 @@ class Settings extends React.Component {
                         <Text style={styles.text}>Настройки</Text>
                     </View>
                     
-                </View>
+                </View> */}
                 <View style={styles.body}>
                     <Text style={styles.lang}>Язык</Text>
                     {/* <View style={styles.body_lang}> */}
@@ -174,7 +174,7 @@ class Settings extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',

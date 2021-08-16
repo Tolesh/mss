@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button,Dimensions,FlatList,SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button,Dimensions,FlatList,SafeAreaView,TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const GLOBAL = require('../views/Globals');
 const getUsersUrl = GLOBAL.BASE_URL + 'ResultScreen.php?action=obv&lang=1';
@@ -12,6 +13,16 @@ const windowHeight = dimensions.height;
 class AddTovar extends React.Component {
     constructor(props) {
         super(props);
+        this.props.navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity                
+                onPress={() => this.props.navigation.navigate('MenuPartnerScreen')}
+            >
+             <Image style={{marginTop: 5,marginLeft: 15}} source={require('../images/Group.png')} />
+            </TouchableOpacity>
+    
+            ),
+        });
     }
 
     state = {
@@ -65,8 +76,9 @@ class AddTovar extends React.Component {
     render(){
         let { data, search } = this.state;
         return (
-            <View style={styles.container}>
-                <Image style={styles.image_3} source={require('../images/Group.png')} />
+            <ScrollView style={styles.container}>
+            <View >
+                {/* <Image style={styles.image_3} source={require('../images/Group.png')} /> */}
                 <View style={styles.header}>
                     <View style={styles.block}>
                     </View>
@@ -76,6 +88,7 @@ class AddTovar extends React.Component {
                     <FlatList 
                         data={this.state.data}
                         renderItem={({ item }) => (
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('MyOb')}>
                              <View style={styles.content}>
                     <View style={styles.image_4}>
                         <Image source={require('../images/image_1.jpg')}></Image>
@@ -92,6 +105,7 @@ class AddTovar extends React.Component {
                             <Text style={styles.price_text}>{item.sutki_1_2}тг/сутки</Text>
                     </View>
                 </View>
+                </TouchableOpacity>
                     )}
                   />
                 </SafeAreaView>
@@ -131,9 +145,11 @@ class AddTovar extends React.Component {
                     <Button
                         title="Добавить объявление"
                         color="#fff"
+                        onPress={() => this.props.navigation.navigate('AddObyavlenie')}
                     /> 
                 </View>
             </View>
+            </ScrollView>
         );
     }
 }
@@ -151,7 +167,7 @@ const styles = StyleSheet.create({
         // flexDirection: 'row', 
         // justifyContent: 'space-between', 
         alignItems: 'center', 
-        marginTop: '40%',
+        marginTop: '80%',
         width: 220,
         backgroundColor: 'black',
         marginLeft: '16%'

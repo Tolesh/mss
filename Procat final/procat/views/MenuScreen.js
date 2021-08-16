@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, FlatList,TouchableOpacity,BackHandler } from 'react-native';
 import { CheckBox } from 'react-native';
 
 class Menu extends React.Component {
@@ -36,10 +36,18 @@ class Menu extends React.Component {
                     </View>
                 </View>
                 <View style={styles.body}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('VhodKakPartner')}>
                     <Text style={styles.text_menu}>Профиль</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('SettingScreen')}>
                     <Text style={styles.text_menu}>Настройки</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('MyZakaz')}>
                     <Text style={styles.text_menu}>Мои заказы</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('LoginScreen')}>
                     <Text style={styles.text_menu}>Выход</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );

@@ -15,6 +15,19 @@ const windowHeight = dimensions.height;
 class Filter extends React.Component {
     constructor(props) {
         super(props);
+        // this.props.navigation.setOptions({
+        //     headerRight: () => (
+        //     //     <TouchableOpacity                
+        //     //     onPress={() => this.props.navigation.navigate('MenuScreen')}
+        //     //     // style={{backgroundColor: 'black'}}
+        //     // >
+        //     //  <Image style={{marginTop: 5,marginLeft: 15}} source={require('../images/Group.png')} />
+        //     // </TouchableOpacity>
+        //     <TouchableOpacity onPress={this.toggle}>
+        //         <Text style={{fontSize: 14,fontWeight: 'bold',marginRight: 15,marginTop: 5}}>Выбрать</Text>
+        //     </TouchableOpacity>
+        //     )
+        // });
     }
     state ={
         // toggle: true,   
@@ -49,10 +62,12 @@ class Filter extends React.Component {
 
         this.getUsers();
     }
+  
     getUsers = () => {
+        // '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         var json = '{"targets": "' + GLOBAL.SERVER_RESULT + '"}';
         const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        // console.log(request);
+        console.log(json);
         fetch(request)
             .then(response => {
                 if (response.status === 200) {
@@ -105,7 +120,6 @@ handleChange = (value, id, index) => {
     this.state.selected_mark_titles.push(value);
     this.state.selected_mark_ids.push(id);
 }
-
 toggle = () => {
     let newArray = [];
     let newIdsArray = [];
@@ -124,9 +138,12 @@ toggle = () => {
     });
     
     this.props.global.selected = newArray;
+    // console.log(this.props.global.selected);
     this.props.global.selected_ids = newIdsArray;
     this.props.navigation.navigate('SearchScreen');
 }
+
+
     render(){
 //  const {toggle} = this.state;
 //  const ButtonBG = toggle?"white":"black";
@@ -136,14 +153,16 @@ toggle = () => {
         return (
             <View style={styles.container}>
                 <View style={styles.head}>
-                    <View style={styles.test}>
+                    {/* <View style={styles.test}>
                     <Pressable onPress={() => this.props.navigation.navigate('SearchScreen')}><Image style={styles.strelka} source={require('../images/strelka.png')} /></Pressable>
                     </View>
                     <View style={styles.test2}>
                         <Text style={styles.text}>Марка</Text>
-                    </View>
+                    </View> */}
                     <View style={styles.test3}>
-                    <TouchableOpacity onPress={this.toggle}><Text style={styles.text2}>Выбрать</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={this.toggle}>
+                        <Text style={styles.text2}>Выбрать</Text>
+                    </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.body}>
@@ -206,7 +225,7 @@ toggle = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         // paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',

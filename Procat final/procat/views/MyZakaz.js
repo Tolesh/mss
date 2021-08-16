@@ -70,14 +70,14 @@ class MyOb extends React.Component {
             
         return (
             <View style={styles.container}>
-                <View style={styles.head}>
+                {/* <View style={styles.head}>
                     <View style={styles.test}>
                         <Image style={styles.strelka} source={require('../images/strelka.png')} />
                     </View>
                     <View style={styles.test2}>
                         <Text style={styles.text}>Мои заказы</Text>
                     </View>
-                </View>
+                </View> */}
                 <SafeAreaView scrollEnabled={true}>
                     <FlatList 
                         data={this.state.data}
@@ -141,7 +141,7 @@ class MyOb extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 20,
         paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',

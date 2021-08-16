@@ -77,9 +77,9 @@ class Result extends React.Component {
         let { data, search } = this.state;
         return(
             <View style={styles.container}>
-                <Pressable onPress={() => this.props.navigation.navigate('SearchScreen')}>
+                {/* <Pressable onPress={() => this.props.navigation.navigate('SearchScreen')}>
                 <Image style={styles.strelka} source={require('../images/strelka.png')} />
-                </Pressable>
+                </Pressable> */}
                 <View style={styles.head}>
                     <Image style={styles.logo} source={require('../images/logo_2.png')} />
                     <Text style={styles.text}>Kesler Rent Car</Text>
@@ -154,15 +154,15 @@ class Result extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 70,
+        paddingTop: 10,
         // paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
         // alignItems: 'center',
     },
     pred_content: {
-        paddingLeft: 30,
-        paddingRight: 19,
+        paddingLeft: '5%',
+        paddingRight: '5%',
     },
     content: {
         backgroundColor: 'black',

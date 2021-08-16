@@ -1,7 +1,7 @@
 import React, { useContext,} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity, ScrollView,TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Button, TouchableOpacity, ScrollView,TouchableWithoutFeedback,KeyboardAvoidingView,Keyboard } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import CheckBox from 'react-native-check-box';
@@ -36,7 +36,7 @@ class Search extends React.Component {
         region: '',
         price_min: '',
         price_max: '',
-        // marka : [],
+        // markasas : [],
         god_min: '',
         god_max: '',
         kpp: '',
@@ -54,9 +54,11 @@ class Search extends React.Component {
         this.setState({ values });
         // this.state.marksArr = this.state.marksArr.map(Number);
         // console.log(this.state.marksArr);
-        // console.log(this.state.marksArr2);
+        console.log(this.props.global.selected_ids);
         this.setState({ marksArr: this.props.global.selected_ids });
+        // this.setState({ markasas : this.props.global.selected });
     }
+    
     // onChangeCheck() {
     //     this.setState({ checked: !this.state.checked})
     // } 
@@ -148,7 +150,7 @@ class Search extends React.Component {
     Search = () => {
         var json = '{"region": "' + this.state.region + '", "price_min": "' + this.state.price_min + '", "price_max": "' + this.state.price_max + '", "marka": "' + this.state.marksArr + '", "god_min": "' + this.state.god_min + '", "god_max": "' + this.state.god_max + '", "kpp": "' + this.state.kpp + '", "mesta": "' + this.state.mesta + '", "s_vodiloy": "' + this.state.s_voditelem + '", "voditel_25": "' + this.state.vodila_25 + '", "calendar": "' + this.state.calendar_date + '"}';
         // const request = new Request(getUsersUrl, { method: 'POST', body: json });
-        console.log(json);
+        // console.log(this.state.marksArr);
         GLOBAL.SERVER_RESULT=json;
         this.props.navigation.navigate('ResultScreen')
         // const request = new Request(getUsersUrl, { method: 'POST', body: json });
@@ -191,11 +193,17 @@ class Search extends React.Component {
         // }
     }
     render(){
-// console.log({this.props.global.selected})
+
       
 
         return (
-            <View style={styles.container}>
+        //     <KeyboardAvoidingView
+        //     behavior={Platform.OS === "ios" ? "padding" : "height"}
+        //     style={styles.container}
+        //   >
+        <ScrollView style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View >
                  <View style={styles.header}>
                     <View style={styles.head_title4}>
                     <Text style={styles.text}>Регион</Text>
@@ -239,7 +247,7 @@ class Search extends React.Component {
                 </View>
                 <View style={styles.header}>
                     <View style={styles.head_title}>
-                        <Text style={styles.text}>Марка</Text>
+                        <Text style={styles.text7}>Марка</Text>
                     </View>
                     <View style={styles.marka}>
                         {
@@ -252,7 +260,10 @@ class Search extends React.Component {
                             <Text onPress={() => this.handleMarka(item)}></Text>
                          )) 
                         } */}
-                        <Pressable onPress={() => this.props.navigation.navigate('FilterScreen')}><Image style={styles.image1} source={require('../images/threedot.png')} /></Pressable>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('FilterScreen')} style={{width: 30,height: 15}} >
+                            <Image   source={require('../images/threedot.png')} style={{marginTop: 5,marginLeft: 4}}/>
+                        
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.header}>
@@ -371,6 +382,8 @@ class Search extends React.Component {
                     </View>
                 </View>
             </View>
+            </TouchableWithoutFeedback>
+            </ScrollView>
         );
     }
 }
@@ -378,7 +391,7 @@ class Search extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 50,
+        paddingTop: 20,
         paddingLeft: 21,
         backgroundColor: 'white',
         // justifyContent: 'center',
@@ -445,7 +458,8 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
         marginLeft: '16%',
-        marginTop: '4%',
+        marginTop: '8%',
+        marginBottom: '5%',
         backgroundColor: 'black'
      },
     text: {
@@ -470,6 +484,11 @@ const styles = StyleSheet.create({
     },
     text6: {
         fontSize: 15,
+    },
+    text7: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        width: 85
     },
     text4: {
         fontSize: 15,
@@ -530,6 +549,8 @@ const styles = StyleSheet.create({
     },
     image1: {
         // backgroundColor: 'yellow',
+        // height: 7,
+        // width: 30
         
     },
     radio_props: {

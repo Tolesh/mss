@@ -121,7 +121,7 @@ class History extends React.Component {
                     <Button
                         title="Найти машину"
                         color="#fff"
-                        onPress={() => this.props.navigation.navigate('SearchScreen')}
+                        onPress={() => this.props.navigation.navigate('FilterScreen')}
                     /> 
                 </View>
                 
