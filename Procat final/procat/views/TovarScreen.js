@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Image, Pressable, TextInput, Button,Dimensions,SafeAreaView,FlatList } from 'react-native';
 import { CheckBox } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const GLOBAL = require('../views/Globals');
@@ -69,11 +70,12 @@ class Tovar extends React.Component {
     render(){
         let { data, search } = this.state;
         return (
-            <View style={styles.container}>
-                <Pressable onPress={() => this.props.navigation.navigate('ResultScreen')}>
+            <ScrollView style={styles.container}>
+            <View >
+                {/* <Pressable onPress={() => this.props.navigation.navigate('ResultScreen')}>
                 <Image style={styles.strelka} source={require('../images/strelka.png')} />
-                </Pressable>
-                <SafeAreaView scrollEnabled={true}>
+                </Pressable> */}
+                {/* <SafeAreaView scrollEnabled={true}> */}
                     <FlatList 
                         data={this.state.data}
                         renderItem={({ item }) => (
@@ -107,14 +109,16 @@ class Tovar extends React.Component {
                             </View>
                   )}
                   />
-                </SafeAreaView>
-                <View style={styles.buttons}>
-                    <Button
+                   <View style={styles.buttons}>
+                    <Button onPress={() => this.props.navigation.navigate('HistoryScreen')}
                         title="Арендовать машину"
                         color="#fff"
                     /> 
                 </View>
+               
+               
             </View>
+            </ScrollView>
         );
     }
 }

@@ -76,7 +76,7 @@ class Login extends React.Component {
                     ["password", response.password],
                 ])
 
-                this.props.navigation.navigate('TovarScreen');
+                this.props.navigation.navigate('HistoryScreen');
             }
         }).catch(error => {
             console.error(error);

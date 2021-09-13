@@ -378,7 +378,7 @@ class Search extends React.Component {
                         <Button
                             onPress={this.Search}
                             title="Найти машину"
-                            color="#fff" /> 
+                            color="#000000" /> 
                     </View>
                 </View>
             </View>
